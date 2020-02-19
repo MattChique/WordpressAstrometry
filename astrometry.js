@@ -23,6 +23,9 @@ jQuery(function($) {
 			$(".astrometry-image img.solved").toggleClass("monochrome");
 			$(this).toggleClass("active");
 		});
+		$(".astrometryActions .openFull").on('click', function() {
+			window.open($(".astrometry-image img.solved").attr("src"), '_blank');
+		});
 	}
 
 	if($(".astrometry-image").find(".solved").length) {
