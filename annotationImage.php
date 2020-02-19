@@ -40,12 +40,12 @@ foreach($jsonAnnotations->annotations as $a)
 	$text = mb_convert_encoding($a->names[0], "HTML-ENTITIES", "UTF-8");
 	$text = preg_replace("/\b^u([0-9a-f]{2,4})\b/", "&#x\\1;", $text);
 
-	if($a->radius < 10)
-		$radius = 10;
+	if($a->radius < 11)
+		$radius = 11;
 	else
 		$radius = $a->radius;
 
-	ImageEllipse($img, $a->pixelx*$ratio + 1, $a->pixely*$ratio + 1, $radius*$ratio*2, $radius*$ratio*2, $darkgrey);
+	ImageEllipse($img, $a->pixelx*$ratio+1, $a->pixely*$ratio+1, $radius*$ratio*2, $radius*$ratio*2, $darkgrey);
 	
 	ImageEllipse($img, $a->pixelx*$ratio, $a->pixely*$ratio, $radius*$ratio*2, $radius*$ratio*2, $white);
 }
