@@ -1,6 +1,9 @@
 jQuery(function($) {
 
 	function showAnnotations() {
+		//Displayed imagewidth
+		$(".astrometry-image img.solved").data("solved", $(".astrometry-image img.solved").data("solved") + "&w=" + $(".astrometry-image img.solved").width());
+
 		//Annotations
 		$(".astrometry-image").append("<img class='annotations' />");
 		$(".astrometry-image").find(".annotations").attr("src", $(".astrometry-image img.solved").data("solved"));
