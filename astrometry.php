@@ -12,7 +12,7 @@ Author URI: http://astromatt.morganslions.de/
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-$astrometryPluginBase = plugin_basename(__FILE__);
+define('ASTROMETRY_PLUGIN_BASE', plugin_basename(__FILE__));
 
 include( plugin_dir_path( __FILE__ ) . 'settings.php');
 include( plugin_dir_path( __FILE__ ) . 'solve.php');

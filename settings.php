@@ -19,9 +19,7 @@ class AstrometrySettings {
     }
 
     public function my_add_action_links( $links, $plugin_file ) {
-        global $astrometryPluginBase;
-
-        if($plugin_file != $astrometryPluginBase)
+        if($plugin_file != ASTROMETRY_PLUGIN_BASE)
             return $links;
 
         return array_merge(
