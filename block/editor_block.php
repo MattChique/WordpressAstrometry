@@ -26,7 +26,7 @@ function myguten_render_paragraph( $attributes, $content ) {
     else
     {
         $content=str_replace("{solvingState}","solved",$content);
-        $content=str_replace("{solvingData}",plugins_url( '../annotationImage.php', __FILE__ ) ."?mediaid=". $attributes["mediaID"] . "&postid=" . $post->ID,$content);
+        $content=str_replace("{solvingData}",dirname(plugins_url(ASTROMETRY_PLUGIN_BASE)) . "/annotationImage.php?mediaid=". $attributes["mediaID"] . "&postid=" . $post->ID,$content);
     }
     
     $jsonInfo = json_decode(get_post_meta($post->ID, "astrometry_info", true));    
