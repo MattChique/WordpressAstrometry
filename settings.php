@@ -69,12 +69,23 @@ class AstrometrySettings {
 			'astrometry-settings-admin',
 			'astrometry_settings_setting_section'
 		);
+
+		add_settings_field(
+            'image_quality', 
+            'Bild-Qualität', 
+			array( $this, 'image_quality_callback' ),
+			'astrometry-settings-admin',
+			'astrometry_settings_setting_section'
+		);
 	}
 
 	public function astrometry_settings_sanitize($input) {
 		$sanitary_values = array();
 		if ( isset( $input['api_key'] ) ) {
 			$sanitary_values['api_key'] = sanitize_text_field( $input['api_key'] );
+		}
+		if ( isset( $input['image_quality'] ) ) {
+			$sanitary_values['image_quality'] = sanitize_text_field( $input['image_quality'] );
 		}
 
 		return $sanitary_values;
@@ -89,6 +100,14 @@ class AstrometrySettings {
 			'<input class="regular-text" type="text" name="astrometry_settings_option_name[api_key]" id="api_key" value="%s">',
 			isset( $this->astrometry_settings_options['api_key'] ) ? esc_attr( $this->astrometry_settings_options['api_key']) : ''
         );
-        echo "<a href='http://nova.astrometry.net' target='_blank'>Get an API Key</a>";
+        echo "<br><a href='http://nova.astrometry.net' target='_blank'>Get an API Key</a>";
+	}
+
+	public function image_quality_callback() {
+		printf(
+			'<input type="number" name="astrometry_settings_option_name[image_quality]" id="image_quality" value="%s">',
+			isset( $this->astrometry_settings_options['image_quality'] ) ? esc_attr( $this->astrometry_settings_options['image_quality']) : '82'
+        );
+        echo "<br>Bildqualität 1-100. Überschreibt die Wordpress Grundeinstellung (82) global.";
 	}
 }

@@ -19,7 +19,8 @@ include( plugin_dir_path( __FILE__ ) . 'solve.php');
 include( plugin_dir_path( __FILE__ ) . 'block/editor_block.php');
 
 //Einstellungen und Ergänzungen
-add_filter('jpeg_quality', function($arg) { return 92; } );
+$astrometry_settings_options = get_option( 'astrometry_settings_option_name' );
+add_filter('jpeg_quality', function($arg) { return $astrometry_settings_options['image_quality']; } );
 
 //CSS
 wp_register_style( 'astronomyCss', plugins_url( '/astrometry.css', __FILE__ ) );
