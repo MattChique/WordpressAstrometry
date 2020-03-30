@@ -29,7 +29,7 @@ $white = imagecolorallocate($img, 254, 254, 254);
 $darkgrey = imagecolorallocate($img, 100, 100, 100);	
 $lightgrey = imagecolorallocate($img, 170, 170, 170);	
 $black = imagecolorallocate($img, 0, 0, 0);	
-$font = dirname(__FILE__) . '\OpenSans-Regular.ttf';
+$font = dirname(__FILE__) . 'assets\font\OpenSans-Regular.ttf';
 
 //Ellipsen zeichnen
 foreach($jsonAnnotations->annotations as $a)
