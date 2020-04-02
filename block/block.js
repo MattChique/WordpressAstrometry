@@ -1,15 +1,15 @@
-(function (blocks, editor, components, i18n, element) {
+(function (blocks, blockEditor, components, i18n, element) {
     var __ = i18n.__
     var el = element.createElement
     var registerBlockType = blocks.registerBlockType
-    var RichText = editor.RichText
-    var BlockControls = editor.BlockControls
-    var MediaUpload = editor.MediaUpload
-    var InspectorControls = editor.InspectorControls
+    var RichText = blockEditor.RichText
+    var BlockControls = blockEditor.BlockControls
+    var MediaUpload = blockEditor.MediaUpload
+    var InspectorControls = blockEditor.InspectorControls
     var PanelBody = components.PanelBody
     var TextControl = components.TextControl
     var ToggleControl = components.ToggleControl
-  
+	  
     registerBlockType('astrometry/photodata', { 
       title: 'Astrometry', 
       description: __('A custom block for displaying an astrometry image.'), 
@@ -20,20 +20,25 @@
         alignWide: true
       },
       attributes: {
-        title: {
+        date: {
           type: 'array',
           source: 'children',
-          selector: '.data1'
+          selector: '.date'
         },
-        subtitle: {
+        framesCount: {
           type: 'array',
           source: 'children',
-          selector: '.data2'
+          selector: '.framesCount'
         },
-        bio: {
+        framesSeconds: {
           type: 'array',
           source: 'children',
-          selector: '.data3'
+          selector: '.framesSeconds'
+        },
+        equipment: {
+          type: 'array',
+          source: 'children',
+          selector: '.equipment'
         },
         mediaID: {
           type: 'number'
@@ -61,6 +66,22 @@
             mediaID: media.id
           })
         }
+		
+		var formatExposureTime = function(seconds) {
+			var minutes = Math.floor(seconds / 60);
+			var hours =  Math.floor(minutes / 60);
+
+			if(hours > 0)
+			{
+				return hours + "." + Math.floor(60/minutes) + "h";
+			}
+			if(minutes > 0)
+			{
+				return minutes + "." + Math.floor(60/seconds) + "min";
+			}
+		}
+		
+
   
         return [
           //Controls
@@ -151,45 +172,63 @@
                 el(RichText, {
                     key: 'editable',
                     tagName: 'p',
-                    className : 'data1',
+                    className : 'date',
                     placeholder: __('Aufnahmedatum'),
                     keepPlaceholderOnFocus: true,
-                    value: attributes.title,
-                    onChange: function (newTitle) {
-                    props.setAttributes({ title: newTitle })
+                    value: attributes.date,
+                    onChange: function (newVal) {
+                    	props.setAttributes({ date: newVal })
                     }
                 }),
-                el('label', {}, __('Belichtung') ),
-                el(RichText, {
-                    tagName: 'p',
-                    className : 'data2',
-                    placeholder: __('Belichtung'),
-                    keepPlaceholderOnFocus: true,
-                    value: attributes.subtitle,
-                    onChange: function (newSubtitle) {
-                    props.setAttributes({ subtitle: newSubtitle })
-                    }
-                }),
+                el('label', {}, __('Frames') ),
+				el('p', { className: 'frames' },				   
+				  	el(RichText, {
+					  tagName: 'span',
+					  className : 'framesCount',
+					  placeholder: __('Anzahl'),
+					  keepPlaceholderOnFocus: true,
+					  value: attributes.framesCount,
+					  onChange: function (newVal) {
+						  props.setAttributes({ framesCount: newVal })
+					  }
+				  	}),
+				   	el('span', { className: 'framesX' }, 'x'),
+					el(RichText, {
+					  tagName: 'span',
+					  className : 'framesSeconds',
+					  placeholder: __('Belichtungsdauer'),
+					  keepPlaceholderOnFocus: true,
+					  value: attributes.framesSeconds,
+					  onChange: function (newVal) {
+						  props.setAttributes({ framesSeconds: newVal })
+					  }			  
+                	}),
+					el('span', { className: 'framesSecondsSymbol' },"''"),
+				   (attributes.framesSeconds*attributes.framesCount)>0 && el('span', { className: 'framesTotalCon' }, 
+						el('span', { className: 'label' }, 'Aufnahmedauer'),
+						el('span', { className: 'framesTotal' }, formatExposureTime(attributes.framesSeconds*attributes.framesCount))
+					)				   
+				),
                 el('label', {}, __('Ausrüstung') ),
                 el(RichText, {
                     tagName: 'p',
-                    className : 'data3',
+                    className : 'equipment',
                     placeholder: __('Ausrüstung'),
                     keepPlaceholderOnFocus: true,
-                    value: attributes.bio,
-                    onChange: function (newBio) {
-                    props.setAttributes({ bio: newBio })
+                    value: attributes.equipment,
+                    onChange: function (newVal) {
+                    	props.setAttributes({ equipment: newVal })
                     }
                 }),
 
                 attributes.showAstrometryMetaData && el('label', {}, "RA" ),
-                attributes.showAstrometryMetaData && el('p', {}, "{RA}"),
+                attributes.showAstrometryMetaData && el('p', {}, "..."),
                 attributes.showAstrometryMetaData && el('label', {}, "DEC" ),
-                attributes.showAstrometryMetaData && el('p', {}, "{DEC}"),
+                attributes.showAstrometryMetaData && el('p', {}, "..."),
                 attributes.showAstrometryMetaData && el('label', {}, "Job" ),
-                attributes.showAstrometryMetaData && el('p', {}, "{JOB}"),
+                attributes.showAstrometryMetaData && el('p', {}, "..."),
                 attributes.showAstrometryMetaData && el('label', {}, "Objekte" ),
-                attributes.showAstrometryMetaData && el('p', {}, "{OBJECTS}")
+                attributes.showAstrometryMetaData && el('p', {}, "...")
         				)
               )
           )
@@ -199,7 +238,19 @@
       save: function (props) {
         var attributes = props.attributes
         var imageClass = 'wp-image-' + props.attributes.mediaID
+		var formatExposureTime = function(seconds) {
+			var minutes = Math.floor(seconds / 60);
+			var hours =  Math.floor(minutes / 60);
 
+			if(hours > 0)
+			{
+				return hours + "." + Math.floor(60/minutes) + "h";
+			}
+			if(minutes > 0)
+			{
+				return minutes + "." + Math.floor(60/seconds) + "min";
+			}
+		}
         return (
             el('div', { className: props.className },
 
@@ -217,23 +268,36 @@
 				   
 				   el('div', { className: 'astrometry-data' },
 				   
-                    attributes.title != "" && el('label', {}, __('Aufnahmedatum')),
-                    attributes.title != "" && el(RichText.Content, {
+                    attributes.date != "" && el('label', {}, __('Aufnahmedatum')),
+                    attributes.date != "" && el(RichText.Content, {
                         tagName: 'p',
-                        className : 'data1',
-                        value: attributes.title
+                        className : 'date',
+                        value: attributes.date
                     }),
-                    attributes.subtitle != "" && el('label', {}, __('Belichtung') ),
-                    attributes.subtitle != "" && el(RichText.Content, {
+                    attributes.framesCount != "" && el('label', {}, __('Frames') ), 
+					attributes.framesCount != "" && el('p', { className: 'frames' },
+						attributes.framesCount != "" && el(RichText.Content, {
+							tagName: 'span',
+							className : 'framesCount',
+							value: attributes.framesCount
+						}),
+						el('span', { className: 'framesX'}, 'x'),
+						attributes.framesSeconds != "" && el(RichText.Content, {
+							tagName: 'span',
+							className : 'framesSeconds',
+							value: attributes.framesSeconds
+						}),
+						el('span', { className: 'framesSecondsSymbol' },"''"),
+				   		(attributes.framesSeconds*attributes.framesCount)>0 && el('span', { className: 'framesTotalCon' }, 
+							el('span', { className: 'label' }, 'Aufnahmedauer'),
+							el('span', { className: 'framesTotal' }, formatExposureTime(attributes.framesSeconds*attributes.framesCount))
+						)
+					),
+                    attributes.equipment != "" && el('label', {}, __('Ausrüstung') ),
+                    attributes.equipment != "" && el(RichText.Content, {
                         tagName: 'p',
-                        className : 'data2',
-                        value: attributes.subtitle
-                    }),
-                    attributes.bio != "" && el('label', {}, __('Ausrüstung') ),
-                    attributes.bio != "" && el(RichText.Content, {
-                        tagName: 'p',
-                        className : 'data3',
-                        value: attributes.bio
+                        className : 'equipment',
+                        value: attributes.equipment
                     }),
 
                     attributes.showAstrometryMetaData && el('label', {}, "RA" ),
