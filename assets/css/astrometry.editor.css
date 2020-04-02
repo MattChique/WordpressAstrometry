@@ -1,0 +1,16 @@
+.astrometry-image-data .data1 ,
+.astrometry-image-data .framesCount,
+.astrometry-image-data .framesSeconds,
+.astrometry-image-data .equipment
+{
+border: 1px solid #a0a0a0;
+    padding: 3px 5px;
+    line-height: normal;
+    border-radius: 3px;
+}
+
+.astrometry-data label, .astrometry-data .label {
+    color: #666!important;
+    font-size: inherit!important;
+    font-weight: normal!important;
+}

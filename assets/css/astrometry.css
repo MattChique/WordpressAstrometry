@@ -1,6 +1,11 @@
 .astrometry-image {
-position:relative;
-line-height: 0px;
+    position: relative;
+    line-height: 0px;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.4);
+    border-bottom: 0px;
 }
 .astrometry-image .annotations {
 	position: absolute;
@@ -133,11 +138,15 @@ line-height: 0px;
 .astrometry-data > * {
   margin-bottom:0px;
 }
-.astrometry-data label {
-  text-align: right;
-  color: #666!important;
+.astrometry-data label, .astrometry-data .label {
+	text-align: right;
+	color: #666!important;
 	font-size: inherit;
-  font-weight: normal;
+	font-weight: normal;
+}
+
+.astrometry-data .framesTotalCon .label {
+	margin:0 0.5rem 0 2rem;
 }
 
 

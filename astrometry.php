@@ -23,8 +23,15 @@ $astrometry_settings_options = get_option( 'astrometry_settings_option_name' );
 add_filter('jpeg_quality', function($arg) { return $astrometry_settings_options['image_quality']; } );
 
 //CSS
-wp_register_style( 'astronomyCss', plugins_url( '/astrometry.css', __FILE__ ) );
-wp_enqueue_style('astronomyCss');
+add_action('enqueue_block_editor_assets', 'addAstrometryEditorCss' );
+function addAstrometryEditorCss() {
+	wp_enqueue_style( 'addAstrometryEditorCss', plugins_url( '/assets/css/astrometry.editor.css', __FILE__ ), false );
+}
+wp_register_style( 'addAstrometryCss', plugins_url( '/assets/css/astrometry.css', __FILE__ ) );
+wp_enqueue_style('addAstrometryCss');
+
+
+
 
 //Init
 function init_astrometry($bal) {
