@@ -29,7 +29,8 @@ $white = imagecolorallocate($img, 254, 254, 254);
 $darkgrey = imagecolorallocate($img, 100, 100, 100);	
 $lightgrey = imagecolorallocate($img, 170, 170, 170);	
 $black = imagecolorallocate($img, 0, 0, 0);	
-$font = dirname(__FILE__) . 'assets\font\OpenSans-Regular.ttf';
+$font = dirname(__FILE__) . '\assets\font\OpenSans-Regular.ttf';
+$fontsize = 10;
 
 //Ellipsen zeichnen
 foreach($jsonAnnotations->annotations as $a)
@@ -79,19 +80,19 @@ foreach($jsonAnnotations->annotations as $a)
 
 	if($a->type == "ngc")
 	{
-		$textsize = imageftbbox( 10, 0, $font, $text);
+		$textsize = imageftbbox( $fontsize, 0, $font, $text);
 
 		if($a->pixely - ($radius/2) - 10 + 1 > 0)
 		{
-			imagefttext($img,11, 0, $a->pixelx*$ratio - ($textsize[2] / 2) + 1, $a->pixely*$ratio - ($radius*$ratio*2/2) - 10 + 1, $darkgrey, $font, $text);
-			imagefttext($img,11, 0, $a->pixelx*$ratio - ($textsize[2] / 2), $a->pixely*$ratio - ($radius*$ratio*2/2) - 10, $white, $font, $text);
+			imagefttext($img,$fontsize, 0, $a->pixelx*$ratio - ($textsize[2] / 2) + 1, $a->pixely*$ratio - ($radius*$ratio*2/2) - 10 + 1, $darkgrey, $font, $text);
+			imagefttext($img,$fontsize, 0, $a->pixelx*$ratio - ($textsize[2] / 2), $a->pixely*$ratio - ($radius*$ratio*2/2) - 10, $white, $font, $text);
 			
 			imageline($img,$a->pixelx*$ratio, $a->pixely*$ratio - ($radius*$ratio*2/2), $a->pixelx*$ratio , $a->pixely*$ratio - ($radius*$ratio*2/2) - 7, $white);
 		}
 		else	
 		{
-			imagefttext($img,11, 0, $a->pixelx*$ratio - ($textsize[2] / 2) + 1, $a->pixely*$ratio + ($radius*$ratio*2/2) + 25 + 1, $darkgrey, $font, $text);
-			imagefttext($img,11, 0, $a->pixelx*$ratio - ($textsize[2] / 2), $a->pixely*$ratio + ($radius*$ratio*2/2) + 25, $white, $font, $text);
+			imagefttext($img,$fontsize, 0, $a->pixelx*$ratio - ($textsize[2] / 2) + 1, $a->pixely*$ratio + ($radius*$ratio*2/2) + 25 + 1, $darkgrey, $font, $text);
+			imagefttext($img,$fontsize, 0, $a->pixelx*$ratio - ($textsize[2] / 2), $a->pixely*$ratio + ($radius*$ratio*2/2) + 25, $white, $font, $text);
 			
 			imageline($img,$a->pixelx*$ratio, $a->pixely*$ratio + ($radius*$ratio*2/2), $a->pixelx*$ratio , $a->pixely*$ratio + ($radius*$ratio*2/2) + 7, $white);
 		}
@@ -100,8 +101,8 @@ foreach($jsonAnnotations->annotations as $a)
 	}
 	else
 	{
-		imagettftext($img, 11, 0, $a->pixelx*$ratio + 10 + 1, $a->pixely*$ratio + 1, $darkgrey, $font, $text);
-		imagettftext($img, 11, 0, $a->pixelx*$ratio + 10, $a->pixely*$ratio, $white, $font, $text);
+		imagettftext($img, $fontsize, 0, $a->pixelx*$ratio + 10 + 1, $a->pixely*$ratio + 1, $darkgrey, $font, $text);
+		imagettftext($img, $fontsize, 0, $a->pixelx*$ratio + 10, $a->pixely*$ratio, $white, $font, $text);
 	}
 }
 
