@@ -2,7 +2,6 @@
 $parse_uri = explode( 'wp-content', $_SERVER['SCRIPT_FILENAME'] );
 require_once( $parse_uri[0] . 'wp-load.php' );
 
-
 if(isset($_GET["w"])){
 	$displayWidth = $_GET["w"];
 } else {
@@ -23,35 +22,33 @@ imagesavealpha($img, true);
 
 $color = imagecolorallocatealpha($img, 0, 0, 0, 127);
 imagefill($img, 0, 0, $color);
-imageantialias($img, true);
 
 $white = imagecolorallocate($img, 254, 254, 254);	
-$darkgrey = imagecolorallocate($img, 100, 100, 100);	
-$lightgrey = imagecolorallocate($img, 170, 170, 170);	
+$darkgrey = imagecolorallocate($img, 33, 33, 33);	
+$lightgrey = imagecolorallocate($img, 120, 120, 120);	
 $black = imagecolorallocate($img, 0, 0, 0);	
+$red = imagecolorallocate($img, 255, 0, 0);	
+$blackTrans = imagecolorallocatealpha($img, 0, 0, 0, 80);
+$red    = imagecolorallocatealpha($img, 255, 0, 0, 60);
+
 $font = dirname(__FILE__) . '\assets\font\OpenSans-Regular.ttf';
 $fontsize = 10;
+$textBoxPadding = 4;
+$textOffsetToObject = 10;
 
-//Ellipsen zeichnen
+//Draw circles
 foreach($jsonAnnotations->annotations as $a)
-{
+{	
 	if($a->type == "hd")
 		continue;
 
-	$text = mb_convert_encoding($a->names[0], "HTML-ENTITIES", "UTF-8");
-	$text = preg_replace("/\b^u([0-9a-f]{2,4})\b/", "&#x\\1;", $text);
+	$radius = getMinRadius($a->radius);
 
-	if($a->radius < 11)
-		$radius = 11;
-	else
-		$radius = $a->radius;
-
-	ImageEllipse($img, $a->pixelx*$ratio+1, $a->pixely*$ratio+1, $radius*$ratio*2, $radius*$ratio*2, $darkgrey);
-	
-	ImageEllipse($img, $a->pixelx*$ratio, $a->pixely*$ratio, $radius*$ratio*2, $radius*$ratio*2, $white);
+	drawCircle($img, ($radius-2)*$ratio*2, $a->pixelx*$ratio, $a->pixely*$ratio, $black);
+	drawCircle($img, $radius*$ratio*2, $a->pixelx*$ratio, $a->pixely*$ratio, $white);
 }
 
-//Bezeichnungen zeichnen
+//Draw annotations
 foreach($jsonAnnotations->annotations as $a)
 {
 	if($a->type == "hd")
@@ -73,40 +70,78 @@ foreach($jsonAnnotations->annotations as $a)
 	$text = mb_convert_encoding($text, "HTML-ENTITIES", "UTF-8");
 	$text = preg_replace("/\b^u([0-9a-f]{2,4})\b/", "&#x\\1;", $text);
 
-	if($a->radius < 10)
-		$radius = 10;
-	else
-		$radius = $a->radius;
-
-	if($a->type == "ngc")
-	{
-		$textsize = imageftbbox( $fontsize, 0, $font, $text);
-
-		if($a->pixely - ($radius/2) - 10 + 1 > 0)
-		{
-			imagefttext($img,$fontsize, 0, $a->pixelx*$ratio - ($textsize[2] / 2) + 1, $a->pixely*$ratio - ($radius*$ratio*2/2) - 10 + 1, $darkgrey, $font, $text);
-			imagefttext($img,$fontsize, 0, $a->pixelx*$ratio - ($textsize[2] / 2), $a->pixely*$ratio - ($radius*$ratio*2/2) - 10, $white, $font, $text);
-			
-			imageline($img,$a->pixelx*$ratio, $a->pixely*$ratio - ($radius*$ratio*2/2), $a->pixelx*$ratio , $a->pixely*$ratio - ($radius*$ratio*2/2) - 7, $white);
-		}
-		else	
-		{
-			imagefttext($img,$fontsize, 0, $a->pixelx*$ratio - ($textsize[2] / 2) + 1, $a->pixely*$ratio + ($radius*$ratio*2/2) + 25 + 1, $darkgrey, $font, $text);
-			imagefttext($img,$fontsize, 0, $a->pixelx*$ratio - ($textsize[2] / 2), $a->pixely*$ratio + ($radius*$ratio*2/2) + 25, $white, $font, $text);
-			
-			imageline($img,$a->pixelx*$ratio, $a->pixely*$ratio + ($radius*$ratio*2/2), $a->pixelx*$ratio , $a->pixely*$ratio + ($radius*$ratio*2/2) + 7, $white);
-		}
-
-		
-	}
-	else
-	{
-		imagettftext($img, $fontsize, 0, $a->pixelx*$ratio + 10 + 1, $a->pixely*$ratio + 1, $darkgrey, $font, $text);
-		imagettftext($img, $fontsize, 0, $a->pixelx*$ratio + 10, $a->pixely*$ratio, $white, $font, $text);
-	}
+	//Draw Text
+	drawText($img, $a->pixelx*$ratio, $a->pixely*$ratio, $text, getMinRadius($a->radius)*$ratio);
 }
 
 imagepng($img); 
 imagedestroy($img);
+
+
+function drawText($img, $x, $y, $text, $objectRadius, $line = true, $boxed = true)
+{
+	global $textOffsetToObject, $textBoxPadding, $fontsize, $font, $darkgrey, $white, $black, $lightgrey, $blackTrans;
+	
+	$x=floor($x);
+	$y=floor($y);
+	$objectRadius = floor($objectRadius);
+	
+	$textBox = imageftbbox($fontsize, 0, $font, $text);
+	$textWidth = $textBox[2];
+	$textHeight = $textBox[5]*-1 + $textBox[1];
+	
+	if($boxed == true) {
+		imagefilledrectangle($img, 
+						$x - floor($textWidth / 2) - $textBoxPadding, 
+						$y - $textHeight - $textBoxPadding - $textOffsetToObject - $textBox[1] - $objectRadius, 
+						$x + floor($textWidth / 2) + $textBoxPadding,
+						$y + $textBoxPadding - $textOffsetToObject - $objectRadius, 
+						$blackTrans);
+		imagerectangle($img, 
+						$x - floor($textWidth / 2) - $textBoxPadding, 
+						$y - $textHeight - $textBoxPadding - $textOffsetToObject - $textBox[1] - $objectRadius, 
+						$x + floor($textWidth / 2) + $textBoxPadding , 
+						$y + $textBoxPadding - $textOffsetToObject - $objectRadius, 
+						$lightgrey);
+	}
+	
+	imagefttext($img, $fontsize, 0, 	$x - floor($textWidth / 2)+1, 	$y - $textOffsetToObject - $objectRadius + 1 - $textBox[1], 	$black, $font, $text);
+	imagefttext($img, $fontsize, 0, 	$x - floor($textWidth / 2), 	$y - $textOffsetToObject - $objectRadius - $textBox[1], 		$white, $font, $text);
+
+	if($line == true) {
+		imageline($img, $x, $y - $objectRadius, $x , $y - $textOffsetToObject - $objectRadius + $textBoxPadding, $lightgrey);
+	}
+}
+
+function drawCircle($img, $radius, $x, $y, $color)
+{
+	global $white, $darkgrey, $black;
+	
+	$x=floor($x);
+	$y=floor($y);
+	$radius = floor($radius);
+	
+	$cRatio = 4;
+	$imgArc = imagecreatetruecolor($radius*$cRatio+$cRatio, $radius*$cRatio+$cRatio);
+	$alphacolor = imagecolorallocatealpha($imgArc, 0, 0, 0, 127);
+	imagesavealpha($imgArc, true);	
+	imagefill($imgArc, 0, 0, $alphacolor);
+	
+	imagesetthickness ( $imgArc , $cRatio );
+	
+	imagearc($imgArc, floor(floor($radius*$cRatio)/2)+floor($cRatio/2), floor(floor($radius*$cRatio)/2)+floor($cRatio/2), floor($radius*$cRatio), floor($radius*$cRatio), 0, 360, $color);
+	
+	imagecopyresampled($img, $imgArc, $x-floor($radius/2), $y-floor($radius/2), 0, 0, $radius, $radius, floor($radius*$cRatio+$cRatio), floor($radius*$cRatio+$cRatio));
+	
+	imagedestroy($imgArc);	
+}
+
+function getMinRadius($radius)
+{
+	if($radius < 11)
+		$radius = 11;
+	
+	return $radius;
+}
 
 ?>
