@@ -256,7 +256,8 @@
 
                 attributes.mediaURL && el('div', { className: 'astrometry-image', 'data-mediaid':props.attributes.mediaID },
                     el('figure', { class: imageClass },
-                        el('img', { src: attributes.mediaURL, class: '{solvingState}', 'data-solved': '{solvingData}' })
+                      el('img', { src: attributes.mediaURL, class: '{solvingState}' }),
+					   	        el('img', { 'data-src': '{solvingData}', class: 'annotations' })
                     )
                 ),            
 

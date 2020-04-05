@@ -8,29 +8,29 @@ if(isset($_GET["w"])){
 	$displayWidth = 1120;
 }
 
-header("Content-type: image/png");	
-
-//Init
+//Read original image annotations
 $jsonAnnotations = json_decode(get_post_meta($_GET["postid"], "astrometry_annotations", true));
 $imageUrl = wp_get_attachment_image_src($_GET["mediaid"], 'original');
 $imageSize = getimagesize($imageUrl[0]);
 $ratio = $displayWidth / $imageSize[0];
 
-//Image bauen
+//Header
+header("Content-type: image/png");
+
+//Create image
 $img = imagecreatetruecolor($displayWidth, $imageSize[1]*$ratio);
 imagesavealpha($img, true);
+imagefill($img, 0, 0, imagecolorallocatealpha($img, 0, 0, 0, 127));
 
-$color = imagecolorallocatealpha($img, 0, 0, 0, 127);
-imagefill($img, 0, 0, $color);
-
+//Define Colors
 $white = imagecolorallocate($img, 254, 254, 254);	
 $darkgrey = imagecolorallocate($img, 33, 33, 33);	
 $lightgrey = imagecolorallocate($img, 120, 120, 120);	
 $black = imagecolorallocate($img, 0, 0, 0);	
 $red = imagecolorallocate($img, 255, 0, 0);	
 $blackTrans = imagecolorallocatealpha($img, 0, 0, 0, 80);
-$red    = imagecolorallocatealpha($img, 255, 0, 0, 60);
 
+//Define settings
 $font = dirname(__FILE__) . '\assets\font\OpenSans-Regular.ttf';
 $fontsize = 10;
 $textBoxPadding = 4;
@@ -74,6 +74,7 @@ foreach($jsonAnnotations->annotations as $a)
 	drawText($img, $a->pixelx*$ratio, $a->pixely*$ratio, $text, getMinRadius($a->radius)*$ratio);
 }
 
+//Return and destroy
 imagepng($img); 
 imagedestroy($img);
 
@@ -125,8 +126,7 @@ function drawCircle($img, $radius, $x, $y, $color)
 	$imgArc = imagecreatetruecolor($radius*$cRatio+$cRatio, $radius*$cRatio+$cRatio);
 	$alphacolor = imagecolorallocatealpha($imgArc, 0, 0, 0, 127);
 	imagesavealpha($imgArc, true);	
-	imagefill($imgArc, 0, 0, $alphacolor);
-	
+	imagefill($imgArc, 0, 0, $alphacolor);	
 	imagesetthickness ( $imgArc , $cRatio );
 	
 	imagearc($imgArc, floor(floor($radius*$cRatio)/2)+floor($cRatio/2), floor(floor($radius*$cRatio)/2)+floor($cRatio/2), floor($radius*$cRatio), floor($radius*$cRatio), 0, 360, $color);

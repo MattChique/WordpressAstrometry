@@ -3,6 +3,7 @@
 if (!function_exists('astrometry')) {
 	function astrometrySolve($postId, $mediaId) 
 	{
+	
 		$astrometry_settings_options = get_option( 'astrometry_settings_option_name' );
 		$apiKey = $astrometry_settings_options['api_key'];
 
@@ -56,7 +57,7 @@ if (!function_exists('astrometry')) {
 						add_post_meta($postId, "astrometry_annotations", $resultA, true);
 						add_post_meta($postId, "astrometry_job", $resultJson->jobs[0], true);
 						add_post_meta($postId, "astrometry_jobcalibrations", json_encode($resultJson->job_calibrations), true);
-						return "Bild wurde erfolgreich astrometrisiert. Bitte Seite neu laden.";
+						return "Bild wurde erfolgreich astrometrisiert.";
 					}
 					return "Bild wird astrometrisiert. " . $resultJobsJson->status . " Submission: " . get_post_meta($postId, "astrometry_subid", true);
 				}

@@ -9,13 +9,17 @@
 }
 .astrometry-image .annotations {
 	position: absolute;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  bottom: 0px;
-  pointer-events:none;
-  opacity:0;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	pointer-events:none;
+	opacity:0;
+	display:none;
 	transition: opacity 0.3s ease-in;
+}
+.astrometry-image .solved+.annotations {
+	display:block;
 }
 .astrometry-image:hover .annotations:not(.visible) {
 	opacity:1;
@@ -41,10 +45,10 @@
 
 
 .astrometryActions {
-  position:absolute;
-  bottom:5px;
-  right:5px;  
-  line-height:normal;
+	position:absolute;
+	bottom:5px;
+	right:5px;  
+	line-height:normal;
 	pointer-events:none;
 }
 .astrometryActions .toggleAnnotations:before {
@@ -104,14 +108,14 @@
 
 
 .astrometry-image-data {
-	padding: 30px;
+	padding: 3rem;
     background: rgba(0,0,0,0.4);
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
     margin: 0 0 1.5em;
     display: grid;
     grid-template-columns: 1fr 2fr;
-	align-items: center;	  
+	align-items: center;	
 }
 .skyplot {
 	vertical-align: middle;
@@ -129,19 +133,25 @@
 .skyplot img {
 	filter: grayscale();
 }
+
+
 .astrometry-data {
   display: grid;
   grid-template-columns: 2fr 3fr;
 	grid-auto-rows: min-content;
-	grid-gap: 5px;
+	grid-gap: 0.6rem;;
+}
+.astrometry-data a{
+  font-weight: 300;
 }
 .astrometry-data > * {
-  margin-bottom:0px;
+  margin-bottom:0;
+	font-size: 1.6rem;
 }
 .astrometry-data label, .astrometry-data .label {
 	text-align: right;
 	color: #666!important;
-	font-size: inherit;
+		
 	font-weight: normal;
 }
 
@@ -154,5 +164,5 @@
 
 
 .editor-styles-wrapper .wp-block-astrometry-photodata p{
-	margin:0px;  
+	margin:0;  
 }  

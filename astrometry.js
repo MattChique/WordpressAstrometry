@@ -1,15 +1,11 @@
-jQuery(function($) {
-
-	function showAnnotations() {
-		//Displayed imagewidth
-		$(".astrometry-image img.solved").load(function() {
-			//Add width
-			$(".astrometry-image img.solved").data("solved", $(".astrometry-image img.solved").data("solved") + "&w=" + $(".astrometry-image img.solved").width());
-
-			//Annotations
-			$(".astrometry-image").append("<img class='annotations' />");
-			$(".astrometry-image").find(".annotations").attr("src", $(".astrometry-image img.solved").data("solved"));
-    	});
+jQuery(document).ready(function($) {
+	if($(".astrometry-image").length) {		
+		//Append displayed width
+		width = $(".astrometry-image").width();
+		if(width != null && width > 0) {
+			$(".astrometry-image img.annotations").data("width", width);
+			$(".astrometry-image img.solved+img.annotations").attr("src",$(".astrometry-image img.annotations").data("src") + "&w=" + width);
+		}
 		
 		//ActionBar
 		$(".astrometry-image").append("<div class='astrometryActions' />");
@@ -29,9 +25,5 @@ jQuery(function($) {
 		$(".astrometryActions .openFull").on('click', function() {
 			window.open($(".astrometry-image img.solved").attr("src"), '_blank');
 		});
-	}
-
-	if($(".astrometry-image").find(".solved").length) {
-		showAnnotations();
 	}
 });
