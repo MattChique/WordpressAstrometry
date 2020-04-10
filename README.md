@@ -8,3 +8,6 @@ All you need is an API key. Get it here: http://nova.astrometry.net. After insta
 # How it looks
 ![look](https://github.com/RedburnM/WordpressAstrometry/raw/master/assets/example.jpg)
 
+# Installation
+Just download the [ZIP file](https://github.com/RedburnM/WordpressAstrometry/archive/master.zip) and upload it with your Wordpress plugin upload interface
+
