@@ -1,6 +1,6 @@
 jQuery(document).ready(function($) {
 	
-	if($(".astrometry-image img.solved").length == 0) {
+	if($(".astrometry-image").length > 0 && $(".astrometry-image img.solved").length == 0) {
 		var data = {'action': 'astronomyImageAction','postId': ajax_object.postId, 'mediaId': $('.astrometry-image').data('mediaid') };
 
 		$('.astrometry-image').append("<div class='astroStatus'>Astrometrisieren wird vorbereitet...</div>");
