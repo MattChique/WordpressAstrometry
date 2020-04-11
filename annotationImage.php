@@ -2,23 +2,25 @@
 $parse_uri = explode( 'wp-content', $_SERVER['SCRIPT_FILENAME'] );
 require_once( $parse_uri[0] . 'wp-load.php' );
 
+//Read original image annotations
+$jsonAnnotations = json_decode(get_post_meta($_GET["postid"], "astrometry_annotations", true));
+$imageUrl = wp_get_attachment_image_src($_GET["mediaid"], 'original');
+
+//Imagesize
 if(isset($_GET["w"])){
 	$displayWidth = $_GET["w"];
 } else {
 	$displayWidth = 1120;
 }
-
-//Read original image annotations
-$jsonAnnotations = json_decode(get_post_meta($_GET["postid"], "astrometry_annotations", true));
-$imageUrl = wp_get_attachment_image_src($_GET["mediaid"], 'original');
 $imageSize = getimagesize($imageUrl[0]);
 $ratio = $displayWidth / $imageSize[0];
+$displayHeight =  $imageSize[1]*$ratio;
 
 //Header
 header("Content-type: image/png");
 
 //Create image
-$img = imagecreatetruecolor($displayWidth, $imageSize[1]*$ratio);
+$img = imagecreatetruecolor($displayWidth, $displayHeight);
 imagesavealpha($img, true);
 imagefill($img, 0, 0, imagecolorallocatealpha($img, 0, 0, 0, 127));
 
@@ -42,7 +44,7 @@ foreach($jsonAnnotations->annotations as $a)
 	if($a->type == "hd")
 		continue;
 
-	$radius = getMinRadius($a->radius);
+	$radius = getMinMaxRadius($a->radius);
 
 	drawCircle($img, ($radius-2)*$ratio*2, $a->pixelx*$ratio, $a->pixely*$ratio, $black);
 	drawCircle($img, $radius*$ratio*2, $a->pixelx*$ratio, $a->pixely*$ratio, $white);
@@ -71,7 +73,7 @@ foreach($jsonAnnotations->annotations as $a)
 	$text = preg_replace("/\b^u([0-9a-f]{2,4})\b/", "&#x\\1;", $text);
 
 	//Draw Text
-	drawText($img, $a->pixelx*$ratio, $a->pixely*$ratio, $text, getMinRadius($a->radius)*$ratio);
+	drawText($img, $a->pixelx*$ratio, $a->pixely*$ratio, $text, getMinMaxRadius($a->radius)*$ratio);
 }
 
 //Return and destroy
@@ -105,7 +107,7 @@ function drawText($img, $x, $y, $text, $objectRadius, $line = true, $boxed = tru
 						$y + $textBoxPadding - $textOffsetToObject - $objectRadius, 
 						$lightgrey);
 	}
-	
+
 	imagefttext($img, $fontsize, 0, 	$x - floor($textWidth / 2)+1, 	$y - $textOffsetToObject - $objectRadius + 1 - $textBox[1], 	$black, $font, $text);
 	imagefttext($img, $fontsize, 0, 	$x - floor($textWidth / 2), 	$y - $textOffsetToObject - $objectRadius - $textBox[1], 		$white, $font, $text);
 
@@ -120,10 +122,13 @@ function drawCircle($img, $radius, $x, $y, $color)
 	
 	$x=floor($x);
 	$y=floor($y);
+	$cRatio = 4;
 	$radius = floor($radius);
 	
-	$cRatio = 4;
-	$imgArc = imagecreatetruecolor($radius*$cRatio+$cRatio, $radius*$cRatio+$cRatio);
+	if($radius > 1200)
+		$cRatio = 2;	
+	
+	$imgArc = imagecreatetruecolor($radius*$cRatio+$cRatio, $radius*$cRatio+$cRatio);	
 	$alphacolor = imagecolorallocatealpha($imgArc, 0, 0, 0, 127);
 	imagesavealpha($imgArc, true);	
 	imagefill($imgArc, 0, 0, $alphacolor);	
@@ -136,10 +141,18 @@ function drawCircle($img, $radius, $x, $y, $color)
 	imagedestroy($imgArc);	
 }
 
-function getMinRadius($radius)
+function getMinMaxRadius($radius)
 {
+	global $displayWidth, $displayHeight;
+
 	if($radius < 11)
 		$radius = 11;
+
+	if($radius > $displayWidth)
+		$radius =  $displayWidth;	
+
+	if($radius > $displayHeight)
+		$radius = $displayHeight;	
 	
 	return $radius;
 }
