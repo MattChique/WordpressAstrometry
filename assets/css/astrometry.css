@@ -1,11 +1,11 @@
 .astrometry-image {
-    position: relative;
-    line-height: 0px;
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
-    overflow: hidden;
-    border: 1px solid rgba(0,0,0,0.4);
-    border-bottom: 0px;
+  position: relative;
+  line-height: 0px;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.4);
+  border-bottom: 0px;
 }
 .astrometry-image .annotations {
 	position: absolute;
@@ -27,12 +27,10 @@
 .astrometry-image .annotations.visible {
   opacity:1;
 }
-
 .astrometry-image .monochrome {
   -webkit-filter: invert(1) grayscale(100%);
    filter: invert(1) grayscale(100%);
 }
-
 .astroStatus {
   position:absolute; 
   bottom:0px; 
@@ -42,7 +40,6 @@
   color:#FFF;
   line-height:normal;
 }
-
 
 .astrometryActions {
 	position:absolute;
@@ -67,8 +64,7 @@
 }
 .astrometryActions .astrometryAction:before {
   font-family: FontAwesome;
-  color:#bbbbbb;
-  
+  color:#bbbbbb;  
 }
 .astrometryActions .astrometryAction:hover:before, .astrometryActions .astrometryAction.active:before {
   color:#900;
@@ -84,26 +80,26 @@
     left:50%;
     margin-left:-40px;
     margin-top:-40px;
+}
+.solving:after {
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid #fff;
+  border-color: #fff transparent #fff transparent;
+  animation: solving 1.2s linear infinite;
+}
+@keyframes solving {
+  0% {
+    transform: rotate(0deg);
   }
-  .solving:after {
-    content: " ";
-    display: block;
-    width: 64px;
-    height: 64px;
-    margin: 8px;
-    border-radius: 50%;
-    border: 6px solid #fff;
-    border-color: #fff transparent #fff transparent;
-    animation: solving 1.2s linear infinite;
+  100% {
+    transform: rotate(360deg);
   }
-  @keyframes solving {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
+}
 
 
 
@@ -133,8 +129,6 @@
 .skyplot img {
 	filter: grayscale();
 }
-
-
 .astrometry-data {
   display: grid;
   grid-template-columns: 2fr 3fr;
@@ -154,11 +148,18 @@
 		
 	font-weight: normal;
 }
-
 .astrometry-data .framesTotalCon .label {
 	margin:0 0.5rem 0 2rem;
 }
 
+@media (max-width: 700px) {
+  .astrometry-image-data {
+    grid-template-columns: 100%;
+  }
+  .skyplot {
+    margin-bottom:2rem;
+  }
+}
 
 
 
