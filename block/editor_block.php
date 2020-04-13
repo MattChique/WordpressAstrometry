@@ -3,19 +3,19 @@
 function astrometry_01_register_block() {
     wp_register_script(
         'astrometry',
-        plugins_url( 'block.js', __FILE__ ),
+        plugins_url('astrometryBlock.js', __FILE__),
         array( 'wp-blocks', 'wp-element', 'wp-editor', 'wp-data', 'wp-i18n' )
     );
  
     register_block_type( 'astrometry/photodata', array(
         'editor_script' => 'astrometry',
-        'render_callback' => 'astrometry_render_paragraph'
+        'render_callback' => 'astrometry_render'
     ) );
- 
+    wp_set_script_translations( 'astrometry', 'astrometry', ASTROMETRY_PLUGIN_BASE . 'languages' );
 }
 add_action( 'init', 'astrometry_01_register_block' );
 
-function astrometry_render_paragraph( $attributes, $content ) {
+function astrometry_render($attributes, $content) {
     global $post;
 
     if($attributes["mediaID"] > 0 && get_post_meta($post->ID, "astrometry_annotations", true) == "") {
@@ -24,7 +24,7 @@ function astrometry_render_paragraph( $attributes, $content ) {
     } else {
         $content=str_replace("{solvingState}","solved",$content);
     }
-	$content=str_replace("{solvingData}",dirname(plugins_url(ASTROMETRY_PLUGIN_BASE)) . "/annotationImage.php?mediaid=". $attributes["mediaID"] . "&postid=" . $post->ID,$content);
+	$content=str_replace("{solvingData}", plugins_url('annotationImage.php', dirname(__FILE__)) . "?mediaid=". $attributes["mediaID"] . "&postid=" . $post->ID,$content);
     
     $jsonInfo = json_decode(get_post_meta($post->ID, "astrometry_info", true));    
     if($jsonInfo != "") {
@@ -53,8 +53,8 @@ function astrometry_render_paragraph( $attributes, $content ) {
 		$content = str_replace("{SKYPLOT}", "<img src='http://nova.astrometry.net/sky_plot/zoom1/" . $jsonCalibration[0][1] . "'>", $content);
 	} else {
 		$content = str_replace("{SKYPLOT}", "", $content);
-	}
-
+    }
+    
     return $content;
 }
 ?>

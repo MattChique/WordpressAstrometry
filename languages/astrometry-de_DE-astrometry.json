@@ -1,0 +1,45 @@
+{
+  "domain": "messages",
+  "locale_data": {
+    "messages": {
+      "": {
+        "domain": "messages",
+        "lang": "de_DE",
+        "plural-forms": "nplurals=2; plural=(n != 1);"
+      },
+      "Date": [
+        "Aufnahmedatum"
+      ],
+      "Number": [
+        "Anzahl"
+      ],
+      "Exposure time": [
+        "Belichtungszeit"
+      ],
+      "Total exposure": [
+        "Aufnahmedauer"
+      ],
+      "Equipment": [
+        "Ausrüstung"
+      ],
+      "Objects": [
+        "Objekte"
+      ],
+      "Show Astrometry Meta": [
+        "Zeige Astrometry Daten"
+      ],
+      "Upload Image": [
+        "Bild hochladen"
+      ],
+      "Show Skyplot": [
+        "Zeige Skyplot"
+      ],
+      "Settings": [
+        "Einstellungen"
+      ],
+      "A custom block for displaying an astrometry image": [
+        "Ein Block, der ein Bild mit Astrometrisierung anzeigt"
+      ]
+    }
+  }
+}
