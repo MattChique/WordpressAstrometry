@@ -1,9 +1,8 @@
 .astrometry-image-data .date ,
 .astrometry-image-data .framesCount,
 .astrometry-image-data .framesSeconds,
-.astrometry-image-data .equipment
-{
-border: 1px solid #a0a0a0;
+.astrometry-image-data .equipment {
+    border: 1px solid #a0a0a0;
     padding: 3px 5px;
     line-height: normal;
     border-radius: 3px;
@@ -12,4 +11,13 @@ border: 1px solid #a0a0a0;
 .astrometry-image.image-inactive {
     padding: 10rem;
     background: rgba(0,0,0,0.3);
+}
+
+.editor-styles-wrapper .astrometry-data, .editor-styles-wrapper .wp-block-astrometry-photodata p {
+    font-size:16px!important;
+    margin:0;  
+}  
+
+.editor-styles-wrapper .astrometry-data label {
+    font-weight: normal;
 }
