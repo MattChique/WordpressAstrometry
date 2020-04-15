@@ -44,16 +44,30 @@ jQuery(document).ready(function($) {
 		$(".astrometryActions .openFull").on('click', function() {
 			window.open($(".astrometry-image img.solved").attr("src"), '_blank');
 		});
+
+		$(".skyplot").on('click', function() {
+			var src = $(this).find('img').attr('src');
+			if(src.indexOf('zoom2') > 0) {
+				$(this).find('img').attr('src', src.replace("zoom2", "zoom1"))
+				return;
+			}
+			if(src.indexOf('zoom1') > 0) {
+				$(this).find('img').attr('src', src.replace("zoom1", "zoom2"))
+				return;
+			}
+		});
 	}
 
 	function AddAnnotations()
 	{
 		width = $(".astrometry-image > figure").width();
 		if(width != null && width > 0) {
-			
+
+			/*
 			var annotationObjects = $("<img />")
 				.attr("src", $(".astrometry-image img").data("solved") + "&w=" + width)
 				.addClass("annotations");
+			*/
 
 			var annotationObject = $("<object></object>")
 				.insertAfter(".astrometry-image img.solved")

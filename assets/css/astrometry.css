@@ -117,7 +117,8 @@
 }
 .skyplot {
 	vertical-align: middle;
-	text-align:center;
+  text-align:center;
+  cursor:pointer;
 }
 .skyplot div {
 	border-radius:5px;
@@ -129,7 +130,7 @@
     min-width: 200px;
 }
 .skyplot img {
-	filter: grayscale();
+  filter: grayscale();
 }
 .astrometry-data {
   display: grid;
