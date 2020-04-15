@@ -18,43 +18,52 @@ add_action( 'init', 'astrometry_01_register_block' );
 function astrometry_render($attributes, $content) {
     global $post;
 
-    if($attributes["mediaID"] > 0 && get_post_meta($post->ID, "astrometry_annotations", true) == "") {
+    $postId = $post->ID;
+    $mediaId = $attributes['mediaID'];
+
+    $data = new AstrometryData($postId, $mediaId);
+
+    if($mediaId > 0 && $data->Get("annotations") == null) {
         add_action( 'wp_enqueue_scripts', 'astrometry_ajax_script' );	
         $content=str_replace("{solvingState}","",$content);
     } else {
         $content=str_replace("{solvingState}","solved",$content);
     }
-	$content=str_replace("{solvingData}", plugins_url('annotationImage.php', dirname(__FILE__)) . "?mediaid=". $attributes["mediaID"] . "&postid=" . $post->ID,$content);
-    
-    $jsonInfo = json_decode(get_post_meta($post->ID, "astrometry_info", true));    
-    if($jsonInfo != "") {
+
+//print_r($attributes);
+
+    $solvingDataUrl = plugins_url('annotation/annotations.php', dirname(__FILE__));
+    $solvingDataUrl .= "?mediaid=". $mediaId . "&postid=" . $postId;
+    if($attributes["showHdCatalogue"] == "1") $solvingDataUrl .= "&showHdCatalogue=true";
+
+    $content=str_replace("{solvingData}", $solvingDataUrl, $content);    
+
+    $submission = $data->Get("submission");
+    $info = $data->Get("info");
+
+    if($info != null) {
+
         $tags = array();
-        foreach($jsonInfo->machine_tags as $t)
+        foreach($info["machine_tags"] as $t)
         {
             $text = preg_replace("/u([0-9a-f]{2,4})/", "&#x\\1;", $t);
             array_push($tags, "<a href='/?s=".$text."'>".$text."</a>");
         }
-		$job = get_post_meta($post->ID, "astrometry_subid", true);
-		
+
         $content = str_replace("{OBJECTS}", join($tags,", "), $content);
-        $content = str_replace("{RA}", $jsonInfo->calibration->ra, $content);
-        $content = str_replace("{DEC}", $jsonInfo->calibration->dec, $content);        
-        $content = str_replace("{JOB}", "<a href='http://nova.astrometry.net/status/".$job."' target='_blank'>".$job."</a>", $content);
+        $content = str_replace("{RA}", $info["calibration"]["ra"], $content);
+        $content = str_replace("{DEC}", $info["calibration"]["dec"], $content);        
+        $content = str_replace("{JOB}", "<a href='http://nova.astrometry.net/status/".$data->Get("submission")["jobs"][0]."' target='_blank'>".$data->Get("submission")["jobs"][0]."</a>", $content);
+        $content = str_replace("{SKYPLOT}", "<img src='//nova.astrometry.net/sky_plot/zoom1/" . $submission["job_calibrations"][0][1] . "'>", $content);
+
     } else {
 		$content = str_replace("{OBJECTS}", "", $content);
         $content = str_replace("{RA}", "", $content);
         $content = str_replace("{DEC}", "", $content);
         $content = str_replace("{JOB}", "", $content);
+        $content = str_replace("{SKYPLOT}", "", $content);
 	}
 
-	$jsonCalibration = json_decode(get_post_meta($post->ID, "astrometry_jobcalibrations", true));
-	if($jsonCalibration != "") {
-		$jsonCalibration = json_decode(get_post_meta($post->ID, "astrometry_jobcalibrations", true));
-		$content = str_replace("{SKYPLOT}", "<img src='http://nova.astrometry.net/sky_plot/zoom1/" . $jsonCalibration[0][1] . "'>", $content);
-	} else {
-		$content = str_replace("{SKYPLOT}", "", $content);
-    }
-    
     return $content;
 }
 ?>

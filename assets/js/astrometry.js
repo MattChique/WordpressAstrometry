@@ -1,12 +1,31 @@
 jQuery(document).ready(function($) {
-	if($(".astrometry-image").length) {		
-		//Append displayed width
-		width = $(".astrometry-image").width();
-		if(width != null && width > 0) {
-			$(".astrometry-image img.annotations").data("width", width);
-			$(".astrometry-image img.solved+img.annotations").attr("src",$(".astrometry-image img.annotations").data("src") + "&w=" + width);
-		}
-		
+
+	function Solve()
+	{		
+		var data = {'action': 'astronomyImageAction','postId': ajax_object.postId, 'mediaId': $('.astrometry-image').data('mediaid') };
+
+		$('.astrometry-image').append("<div class='astroStatus'></div>");
+		$('.astrometry-image').append("<div class='solving'></div>");
+
+		(function worker() {
+			jQuery.post(ajax_object.ajax_url, data, function(response) {
+				if(response != "") {
+					$('.astrometry-image').find('.astroStatus').html(response);
+					setTimeout(worker, 5);
+				} else {
+					$('.astrometry-image .solving').remove();
+					$('.astrometry-image').find('.astroStatus').fadeOut(10000, function() { $('.astrometry-image').find('.astroStatus').remove(); });
+					$('.astrometry-image :not(.annotations)').addClass('solved');
+
+					AddActionBar();
+					AddAnnotations();
+				}
+			});
+		})();		
+	}
+
+	function AddActionBar()
+	{
 		//ActionBar
 		$(".astrometry-image").append("<div class='astrometryActions' />");
 		$(".astrometryActions").append("<span class='toggleAnnotations astrometryAction' />");
@@ -25,5 +44,33 @@ jQuery(document).ready(function($) {
 		$(".astrometryActions .openFull").on('click', function() {
 			window.open($(".astrometry-image img.solved").attr("src"), '_blank');
 		});
+	}
+
+	function AddAnnotations()
+	{
+		width = $(".astrometry-image > figure").width();
+		if(width != null && width > 0) {
+			
+			var annotationObjects = $("<img />")
+				.attr("src", $(".astrometry-image img").data("solved") + "&w=" + width)
+				.addClass("annotations");
+
+			var annotationObject = $("<object></object>")
+				.insertAfter(".astrometry-image img.solved")
+				.attr("data", $(".astrometry-image img").data("solved") + "&w=" + width)
+				.attr("type", "image/svg+xml")
+				.addClass("annotations");
+
+			
+		}
+	}
+
+	if($(".astrometry-image").length > 0) {		
+		if($(".astrometry-image img.solved").length == 0) {
+			Solve();
+		} else {
+			AddActionBar();
+			AddAnnotations();
+		}
 	}
 });

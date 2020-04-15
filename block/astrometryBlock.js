@@ -54,6 +54,9 @@
         },
         showAstrometrySkyplot: {
           type: 'boolean'
+        },
+        showHdCatalogue: {
+          type: 'boolean'
         }
       },
   
@@ -123,7 +126,15 @@
               onChange: function (showPlot) {
                 props.setAttributes( {  showAstrometrySkyplot: !attributes.showAstrometrySkyplot } )
               }
-            }))
+            }),
+            el(ToggleControl, {
+              label: __('Show HD Catalogue Stars', 'astrometry'),
+              checked: attributes.showHdCatalogue,
+              onChange: function (showHd) {
+                props.setAttributes( {  showHdCatalogue: !attributes.showHdCatalogue } )
+              }
+            })
+            )
           ),
           //WP Block
           el('div', { className: props.className },
@@ -256,8 +267,7 @@
 
                 attributes.mediaURL && el('div', { className: 'astrometry-image', 'data-mediaid':props.attributes.mediaID },
                     el('figure', { class: imageClass },
-                      el('img', { src: attributes.mediaURL, class: '{solvingState}' }),
-					   	        el('img', { 'data-src': '{solvingData}', class: 'annotations' })
+                      el('img', { src: attributes.mediaURL, class: '{solvingState}', 'data-solved': '{solvingData}' })
                     )
                 ),            
 
