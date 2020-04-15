@@ -34,7 +34,7 @@ function astrometry_render($attributes, $content) {
 
     $solvingDataUrl = plugins_url('annotation/annotations.php', dirname(__FILE__));
     $solvingDataUrl .= "?mediaid=". $mediaId . "&postid=" . $postId;
-    if($attributes["showHdCatalogue"] == "1") $solvingDataUrl .= "&showHdCatalogue=true";
+    if(isset($attributes["showHdCatalogue"])) $solvingDataUrl .= "&showHdCatalogue=true";
 
     $content=str_replace("{solvingData}", $solvingDataUrl, $content);    
 
@@ -53,7 +53,7 @@ function astrometry_render($attributes, $content) {
         $content = str_replace("{OBJECTS}", join($tags,", "), $content);
         $content = str_replace("{RA}", $info["calibration"]["ra"], $content);
         $content = str_replace("{DEC}", $info["calibration"]["dec"], $content);        
-        $content = str_replace("{JOB}", "<a href='http://nova.astrometry.net/status/".$data->Get("submission")["jobs"][0]."' target='_blank'>".$data->Get("submission")["jobs"][0]."</a>", $content);
+        $content = str_replace("{JOB}", "<a href='http://nova.astrometry.net/status/".$data->Get("submission")["jobs"][0]."' target='_blank'>".$submission["jobs"][0]."</a>", $content);
         $content = str_replace("{SKYPLOT}", "<img src='//nova.astrometry.net/sky_plot/zoom1/" . $submission["job_calibrations"][0][1] . "'>", $content);
 
     } else {
