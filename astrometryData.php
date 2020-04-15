@@ -11,7 +11,7 @@ class AstrometryData
         $this->postId = $postId;
         $this->mediaId = $mediaId;
         $this->metaFieldName = "astrometry_data_" . $this->mediaId;
-        $this->data = json_decode(get_post_meta($this->postId, $this->metaFieldName, true), true);
+		$this->data = json_decode(get_post_meta($this->postId, $this->metaFieldName, true), true);
     }
 
     public function Add($key, $value)
@@ -32,6 +32,9 @@ class AstrometryData
 
     public function Get($key)
     {
+		if($this->data == null)
+			return null;
+
         if(array_key_exists($key,$this->data) && $this->data[$key] != null)
             return $this->data[$key];
         else
@@ -43,14 +46,14 @@ class AstrometryData
 		if($apiKey == "")
 			return "No API Key!";
 
-        if($this->Get("annotations") == "")
+		if($this->Get("annotations") == null)
 		{
-			if($this->Get("subid") != "")
+			if($this->Get("subid") != null)
 			{
 				$resultJsonSubmission = json_decode(file_get_contents("http://nova.astrometry.net/api/submissions/".$this->Get("subid")));
 
 				if($resultJsonSubmission->jobs[0] != "")
-				{
+				{	
                     $this->Add("submission", $resultJsonSubmission);
 
 					$resultJsonJob = json_decode(file_get_contents("http://nova.astrometry.net/api/jobs/".$resultJsonSubmission->jobs[0]));
