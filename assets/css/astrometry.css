@@ -24,7 +24,12 @@
   max-height: 100vh;
   display: inline-block;
 }
-
+.astrometry-image figure {
+  cursor:zoom-in;
+}
+.astrometry-image.fullsize figure {
+  cursor:zoom-out;
+}
 .astrometry-image .annotations {
 	position: absolute;
 	top: 0px;
@@ -40,7 +45,7 @@
 .astrometry-image .solved+.annotations {
 	display:block;
 }
-.astrometry-image:hover .annotations:not(.visible) {
+.astrometry-image .solved:hover+.annotations:not(.visible) {
 	opacity:1;
 }
 .astrometry-image .annotations.visible {

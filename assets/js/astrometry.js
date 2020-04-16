@@ -58,8 +58,8 @@ jQuery(document).ready(function($) {
 			}
 		});
 
-		//Toggle Fullsize Image width Annotations
-		$(".astrometry-image img").on('click', function() {
+		//Toggle Fullsize Image with Annotations
+		$(".astrometry-image figure").on('click', function() {
 			$(".astrometry-image").toggleClass("fullsize");
 		});
 	}
