@@ -7,11 +7,7 @@ require_once(__DIR__."\annotator.php");
 require_once(dirname(__DIR__)."\astrometryData.php");
 
 //Query
-if(isset($_GET["showHdCatalogue"]))
-    $hd = $_GET["showHdCatalogue"];
-else
-    $hd = false;
-
+$hd = isset($_GET["showHdCatalogue"]) ? $_GET["showHdCatalogue"] : false;
 $postId = $_GET["postid"];
 $mediaID = $_GET["mediaid"];
 $displayWidth = $_GET["w"];
