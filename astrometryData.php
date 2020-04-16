@@ -79,7 +79,7 @@ class AstrometryData
 						return "Bild wurde erfolgreich astrometrisiert.";
 					}
 
-					return "Bild wird astrometrisiert. " . $resultJsonJob->status . " Submission: " . $this->Get("subid");
+					return "Bild wird astrometrisiert: " . $resultJsonJob->status . " Submission: " . $this->Get("subid");
                 }
                 
 				return "Bild wird astrometrisiert. Submission: " . $this->Get("subid");
