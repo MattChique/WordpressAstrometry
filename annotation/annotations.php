@@ -21,7 +21,7 @@ $data = new AstrometryData($postId, $mediaID);
 $imageUrl = wp_get_attachment_image_src($_GET["mediaid"], 'original');
 
 //Create Annotator and draw
-$annotator = Annotator::Png($imageUrl, $displayWidth, $data->Get("annotations")["annotations"]);
+$annotator = Annotator::Svg($imageUrl, $displayWidth, $data->Get("annotations")["annotations"]);
 $annotator->SetFont("../assets/font/OpenSans-Regular.ttf",10);
 $annotator->ShowHD($hd);
 $annotator->Draw();
