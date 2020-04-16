@@ -45,6 +45,7 @@ jQuery(document).ready(function($) {
 			window.open($(".astrometry-image img.solved").attr("src"), '_blank');
 		});
 
+		//Zoomable Skyplot
 		$(".skyplot").on('click', function() {
 			var src = $(this).find('img').attr('src');
 			if(src.indexOf('zoom2') > 0) {
@@ -56,26 +57,21 @@ jQuery(document).ready(function($) {
 				return;
 			}
 		});
+
+		//Toggle Fullsize Image width Annotations
+		$(".astrometry-image img").on('click', function() {
+			$(".astrometry-image").toggleClass("fullsize");
+		});
 	}
 
 	function AddAnnotations()
 	{
 		width = $(".astrometry-image > figure").width();
 		if(width != null && width > 0) {
-
-			/*
 			var annotationObjects = $("<img />")
+				.insertAfter(".astrometry-image img.solved")
 				.attr("src", $(".astrometry-image img").data("solved") + "&w=" + width)
 				.addClass("annotations");
-			*/
-
-			var annotationObject = $("<object></object>")
-				.insertAfter(".astrometry-image img.solved")
-				.attr("data", $(".astrometry-image img").data("solved") + "&w=" + width)
-				.attr("type", "image/svg+xml")
-				.addClass("annotations");
-
-			
 		}
 	}
 
