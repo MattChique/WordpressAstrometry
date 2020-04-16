@@ -107,5 +107,33 @@ class AstrometryData
 		curl_setopt($curl, CURLOPT_POSTFIELDS, $content);
 		return curl_exec($curl);
 	}
+
+	public static function DEC($dec)
+	{
+		// Converts decimal format to DMS ( Degrees / minutes / seconds ) 
+		$vars = explode(".",$dec);
+		$deg = $vars[0];
+		$tempma = "0.".$vars[1];
+
+		$tempma = $tempma * 3600;
+		$min = floor($tempma / 60);
+		$sec = $tempma - ($min*60);
+
+		return $deg . "° " . $min . "' " . floor($sec) . "''";
+	}    
+
+	public static function RA($dec)
+	{		
+		// Converts decimal format to HMS ( Hour / minutes / seconds ) 
+		$vars = explode(".",$dec);
+		$deg = floor($vars[0]/(360/24));
+		$tempma = "0.".$vars[1];
+
+		$tempma = $tempma * 3600;
+		$min = floor($tempma / 60);
+		$sec = $tempma - ($min*60);
+
+		return $deg . "h " . $min . "' " . floor($sec) . "''";
+	}    
 }
 ?>
