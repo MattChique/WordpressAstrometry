@@ -70,21 +70,16 @@
           })
         }
 		
-		var formatExposureTime = function(seconds) {
-			var minutes = Math.floor(seconds / 60);
-			var hours =  Math.floor(minutes / 60);
-
-			if(hours > 0)
-			{
-				return hours + "." + Math.floor(60/minutes) + "h";
-			}
-			if(minutes > 0)
-			{
-				return minutes + "." + Math.floor(60/seconds) + "min";
-			}
-		}
-		
-
+        var formatExposureTime = function(seconds) {
+          var minutes = Math.floor(seconds / 60);
+          var hours =  Math.floor(minutes / 60);
+          if(hours > 0) {
+            return hours + "." + Math.floor(60/minutes) + "h";
+          }
+          if(minutes > 0) {
+            return minutes + "." + Math.floor(60/seconds) + "min";
+          }
+        }
   
         return [
           //Controls
@@ -120,7 +115,7 @@
                 props.setAttributes( {  showAstrometryMetaData: !attributes.showAstrometryMetaData } )
               }
             }),			   
-			el(ToggleControl, {
+			      el(ToggleControl, {
               label: __('Show Skyplot', 'astrometry'),
               checked: attributes.showAstrometrySkyplot,
               onChange: function (showPlot) {
@@ -139,45 +134,31 @@
           //WP Block
           el('div', { className: props.className },
 
-            el('div', {
-              className: attributes.mediaID ? 'astrometry-image image-active' : 'astrometry-image image-inactive',
-              style: {}
-                },
-                el(MediaUpload, {
+            el('div', { className: attributes.mediaID ? 'astrometry-image image-active' : 'astrometry-image image-inactive', style: {} },
+              el(MediaUpload, {
                 onSelect: onSelectImage,
                 type: 'image',
                 value: attributes.mediaID,
                 render: function (obj) {
-
-                    return (
-                        el('div',{},
-                            el('img', { src: attributes.mediaURL }),
-                            el(components.Button, {
-                                className: attributes.mediaID ? 'button button-large' : 'button button-large',
-                                style: {'position':'absolute', 'right':'5px', 'bottom':'5px'},
-                                onClick: obj.open
-                                }, __('Upload Image', 'astrometry'))
-                        )
+                  return (
+                    el('div',{},
+                        el('img', { src: attributes.mediaURL }),
+                        el(components.Button, {
+                            className: attributes.mediaID ? 'button button-large' : 'button button-large',
+                            style: {'position':'absolute', 'right':'5px', 'bottom':'5px'},
+                            onClick: obj.open
+                            }, __('Upload Image', 'astrometry'))
                     )
-                    /*
-                    return el(components.Button, {
-                    className: attributes.mediaID ? 'image-button' : 'button button-large',
-                    onClick: obj.open
-                    },
-                    !attributes.mediaID ? __('Upload Image') : el('img', { src: attributes.mediaURL })
-                    )
-                    */
+                  )
                 }
-                })
+              })
             ),
 
             el('div', { className: 'astrometry-image-data' },
             
-            	attributes.showAstrometrySkyplot && el('div', { class:'skyplot'}, 
-					el('div', {},"")
-				),
+            	attributes.showAstrometrySkyplot && el('div', { class:'skyplot'}, el('div', {},"")),
 
-			   el('div', { className: 'astrometry-data' },
+			        el('div', { className: 'astrometry-data' },
 			   
                 el('label', {}, __('Date', 'astrometry')),
                 el(RichText, {
@@ -191,35 +172,36 @@
                     	props.setAttributes({ date: newVal })
                     }
                 }),
+
                 el('label', {}, __('Frames', 'astrometry') ),
-				el('p', { className: 'frames' },				   
-				  	el(RichText, {
-					  tagName: 'span',
-					  className : 'framesCount',
-					  placeholder: __('Number', 'astrometry'),
-					  keepPlaceholderOnFocus: true,
-					  value: attributes.framesCount,
-					  onChange: function (newVal) {
-						  props.setAttributes({ framesCount: newVal })
-					  }
-				  	}),
-				   	el('span', { className: 'framesX' }, 'x'),
-					el(RichText, {
-					  tagName: 'span',
-					  className : 'framesSeconds',
-					  placeholder: __('Exposure time', 'astrometry'),
-					  keepPlaceholderOnFocus: true,
-					  value: attributes.framesSeconds,
-					  onChange: function (newVal) {
-						  props.setAttributes({ framesSeconds: newVal })
-					  }			  
-                	}),
-					el('span', { className: 'framesSecondsSymbol' },"''"),
-				   (attributes.framesSeconds*attributes.framesCount)>0 && el('span', { className: 'framesTotalCon' }, 
-						el('span', { className: 'label' }, __('Total exposure', 'astrometry')),
-						el('span', { className: 'framesTotal' }, formatExposureTime(attributes.framesSeconds*attributes.framesCount))
-					)				   
-				),
+                  el('p', { className: 'frames col2' },				   
+                    el(RichText, {
+                      tagName: 'span',
+                      className : 'framesCount',
+                      placeholder: __('Number', 'astrometry'),
+                      keepPlaceholderOnFocus: true,
+                      value: attributes.framesCount,
+                      onChange: function (newVal) {
+                        props.setAttributes({ framesCount: newVal })
+                      }
+                    }),
+                    el('span', { className: 'framesX info' }, 'x'),
+                    el(RichText, {
+                      tagName: 'span',
+                      className : 'framesSeconds',
+                      placeholder: __('Exposure time', 'astrometry'),
+                      keepPlaceholderOnFocus: true,
+                      value: attributes.framesSeconds,
+                      onChange: function (newVal) {
+                        props.setAttributes({ framesSeconds: newVal })
+                      }			  
+                    }),
+                    el('span', { className: 'framesSecondsSymbol' },"''"),
+                ),
+
+                (attributes.framesSeconds*attributes.framesCount)>0 && el('label', { className: 'col3' }, __('Total exposure', 'astrometry')),
+                (attributes.framesSeconds*attributes.framesCount)>0 && el('p', { className: 'col4' }, formatExposureTime(attributes.framesSeconds*attributes.framesCount)),
+                
                 el('label', {}, __('Equipment', 'astrometry') ),
                 el(RichText, {
                     tagName: 'p',
@@ -232,16 +214,10 @@
                     }
                 }),
 
-                attributes.showAstrometryMetaData && el('label', {}, "RA" ),
-                attributes.showAstrometryMetaData && el('p', {}, "..."),
-                attributes.showAstrometryMetaData && el('label', {}, "DEC" ),
-                attributes.showAstrometryMetaData && el('p', {}, "..."),
-                attributes.showAstrometryMetaData && el('label', {}, __('Job', 'astrometry') ),
-                attributes.showAstrometryMetaData && el('p', {}, "..."),
-                attributes.showAstrometryMetaData && el('label', {}, __('Objects', 'astrometry') ),
+                attributes.showAstrometryMetaData && el('label', {}, __('Astrometry data', 'astrometry') ),
                 attributes.showAstrometryMetaData && el('p', {}, "...")
-        				)
               )
+            )
           )
         ]
       },
@@ -249,19 +225,18 @@
       save: function (props) {
         var attributes = props.attributes
         var imageClass = 'wp-image-' + props.attributes.mediaID
-		var formatExposureTime = function(seconds) {
-			var minutes = Math.floor(seconds / 60);
-			var hours =  Math.floor(minutes / 60);
 
-			if(hours > 0)
-			{
-				return hours + "." + Math.floor(60/minutes) + "h";
-			}
-			if(minutes > 0)
-			{
-				return minutes + "." + Math.floor(60/seconds) + "min";
-			}
-		}
+        var formatExposureTime = function(seconds) {
+          var minutes = Math.floor(seconds / 60);
+          var hours =  Math.floor(minutes / 60);
+          if(hours > 0) {
+            return hours + "." + Math.floor(60/minutes) + "h";
+          }
+          if(minutes > 0) {
+            return minutes + "." + Math.floor(60/seconds) + "min";
+          }
+        }
+
         return (
             el('div', { className: props.className },
 
@@ -273,11 +248,11 @@
 
                 el('div', { className: 'astrometry-image-data', style: { } },
 
-				   attributes.showAstrometrySkyplot && el('div', { class: 'skyplot'}, 
-					el('div', { }, "{SKYPLOT}"),									 
-					),
+                  attributes.showAstrometrySkyplot && el('div', { class: 'skyplot'}, 
+                    el('div', { }, "{SKYPLOT}"),									 
+                  ),
 				   
-				   el('div', { className: 'astrometry-data' },
+				          el('div', { className: 'astrometry-data' },
 				   
                     attributes.date != "" && el('label', {}, __('Date', 'astrometry')),
                     attributes.date != "" && el(RichText.Content, {
@@ -285,25 +260,26 @@
                         className : 'date',
                         value: attributes.date
                     }),
+
                     attributes.framesCount != "" && el('label', {}, __('Frames', 'astrometry') ), 
-					attributes.framesCount != "" && el('p', { className: 'frames' },
-						attributes.framesCount != "" && el(RichText.Content, {
-							tagName: 'span',
-							className : 'framesCount',
-							value: attributes.framesCount
-						}),
-						el('span', { className: 'framesX'}, 'x'),
-						attributes.framesSeconds != "" && el(RichText.Content, {
-							tagName: 'span',
-							className : 'framesSeconds',
-							value: attributes.framesSeconds
-						}),
-						el('span', { className: 'framesSecondsSymbol' },"''"),
-				   		(attributes.framesSeconds*attributes.framesCount)>0 && el('span', { className: 'framesTotalCon' }, 
-							el('span', { className: 'label' }, __('Total exposure', 'astrometry')),
-							el('span', { className: 'framesTotal' }, formatExposureTime(attributes.framesSeconds*attributes.framesCount))
-						)
-					),
+					          attributes.framesCount != "" && el('p', { className: 'col2 frames' },
+                      attributes.framesCount != "" && el(RichText.Content, {
+                        tagName: 'span',
+                        className : 'framesCount',
+                        value: attributes.framesCount
+                      }),
+                      el('span', { className: 'framesX info'}, 'x'),
+                      attributes.framesSeconds != "" && el(RichText.Content, {
+                        tagName: 'span',
+                        className : 'framesSeconds',
+                        value: attributes.framesSeconds
+                      }),
+                      el('span', { className: 'framesSecondsSymbol' },"''")
+                    ),
+          
+                    (attributes.framesSeconds*attributes.framesCount)>0 && el('label', { className: 'col3' }, __('Total exposure', 'astrometry')),
+                    (attributes.framesSeconds*attributes.framesCount)>0 && el('p', { className: 'col4' }, formatExposureTime(attributes.framesSeconds*attributes.framesCount)),
+
                     attributes.equipment != "" && el('label', {}, __('Equipment', 'astrometry') ),
                     attributes.equipment != "" && el(RichText.Content, {
                         tagName: 'p',
@@ -311,17 +287,9 @@
                         value: attributes.equipment
                     }),
 
-                    attributes.showAstrometryMetaData && el('label', {}, "RA" ),
-                    attributes.showAstrometryMetaData && el('p', {}, "{RA}"),
-                    attributes.showAstrometryMetaData && el('label', {}, "DEC" ),
-                    attributes.showAstrometryMetaData && el('p', {}, "{DEC}"),
-                    attributes.showAstrometryMetaData && el('label', {}, __('Job', 'astrometry') ),
-                    attributes.showAstrometryMetaData && el('p', {}, "{JOB}"),
-                    attributes.showAstrometryMetaData && el('label', {}, __('Objects', 'astrometry') ),
-                    attributes.showAstrometryMetaData && el('p', {}, "{OBJECTS}")
-					  
-					    )
-            )
+                    attributes.showAstrometryMetaData && el('p', {}, "{ASTROMETRYDATA}")					  
+					        )
+                )
           )
         )        
       }
