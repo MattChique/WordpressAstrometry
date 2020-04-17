@@ -159,7 +159,6 @@
   grid-template-columns: 2fr 1fr 1.5fr 2fr;
 	grid-auto-rows: min-content;
   grid-gap: 0.6rem;
-  width: max-content;
 }
 .astrometry-data a{
   font-weight: 300;
