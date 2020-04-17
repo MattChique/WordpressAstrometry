@@ -11,6 +11,8 @@ Welcome to my first Wordpress Plugin. It is an Plugin, that provides a Gutenberg
 # How it looks
 ![look](https://github.com/RedburnM/WordpressAstrometry/raw/master/assets/example.png)
 
+Or checkout [my demo](https://www.explorespace.de/2020/m45/)
+
 # What you need
 All you need is an API key. Get it here: http://nova.astrometry.net. After install, go to the plugins settings and fill it in the API key data field.
 
