@@ -43,7 +43,7 @@ function astrometry_render($attributes, $content) {
     //Set solving data of image
     $solvingDataUrl = plugins_url('annotation/annotations.php', dirname(__FILE__));
     $solvingDataUrl .= "?mediaid=". $mediaId . "&postid=" . $postId;
-    if(isset($attributes["showHdCatalogue"])) $solvingDataUrl .= "&showHdCatalogue=true";
+    if(isset($attributes["showHdCatalogue"]) && $attributes["showHdCatalogue"] == true) $solvingDataUrl .= "&showHdCatalogue=true";
     $content=str_replace("{solvingData}", $solvingDataUrl, $content);    
 
     //Build astrometry data, if turned on an image is solved
