@@ -68,16 +68,16 @@ class SvgAnnotation extends Annotation
         
 SVG;
 
-        foreach($this->annotations as $a)
+        foreach($this->annotations as $object)
         {	
-            if($a["type"] == "hd" && !$this->showHD)
+            if($object["type"] == "hd" && !$this->showHD)
                 continue;
 
             //Draw Circle
-            $this->DrawCircle($a);
+            $this->DrawCircle($object);
 
             //Draw Text
-            $this->DrawText($a);
+            $this->DrawText($object);
         }
 
         echo <<<SVG
@@ -88,23 +88,23 @@ SVG;
 SVG;
     }
 
-    public function DrawCircle($circle)
+    public function DrawCircle($object)
     {            
-        $radius = $this->RV($this->getMinMaxRadius($circle["radius"]));
-        $x = $this->RV($circle["pixelx"]);
-        $y = $this->RV($circle["pixely"]);   
+        $radius = $this->RV($this->getMinMaxRadius($object["radius"]));
+        $x = $this->RV($object["pixelx"]);
+        $y = $this->RV($object["pixely"]);   
         echo <<<SVG
         
-            <ellipse rx="{$radius}" ry="{$radius}" cx="{$x}" cy="{$y}" class="type-{$circle["type"]}"/>
+            <ellipse rx="{$radius}" ry="{$radius}" cx="{$x}" cy="{$y}" class="type-{$object["type"]}"/>
 SVG;
     }
 
-    public function DrawText($circle, $line = true, $boxed = true)
+    public function DrawText($object, $line = true, $boxed = true)
     {
-        $x = $this->RV($circle["pixelx"]);
-        $y = $this->RV($circle["pixely"]);
-        $text = $this->GetNames($circle["names"]);
-        $objectRadius = $this->RV($this->getMinMaxRadius($circle["radius"]));
+        $x = $this->RV($object["pixelx"]);
+        $y = $this->RV($object["pixely"]);
+        $text = $this->GetNames($object["names"]);
+        $objectRadius = $this->RV($this->getMinMaxRadius($object["radius"]));
 
         $textBox = imagettfbbox($this->fontSize, 0, realpath($this->fontPath), $text);
         $textWidth = $textBox[2];
@@ -120,12 +120,12 @@ SVG;
             
             echo <<<SVG
 
-            <rect width="{$boxW}" height="{$boxH}" x="{$boxX}.5" y="{$boxY}.5" class="type-{$circle["type"]}" />
+            <rect width="{$boxW}" height="{$boxH}" x="{$boxX}.5" y="{$boxY}.5" class="type-{$object["type"]}" />
 SVG;
         }
         echo <<<SVG
 
-            <text x="{$x}" y="{$y}" class="type-{$circle["type"]}" text-anchor="middle" transform="translate(0 -{$textY})">{$text}</text>
+            <text x="{$x}" y="{$y}" class="type-{$object["type"]}" text-anchor="middle" transform="translate(0 -{$textY})">{$text}</text>
 SVG;
 
         if($line == true) {
@@ -133,7 +133,7 @@ SVG;
             $y2 = $y - $this->textOffsetToObject - $objectRadius;
             echo <<<SVG
 
-            <line x1="{$x}" y1="{$y1}" x2="{$x}" y2="{$y2}" class="type-{$circle["type"]}" />
+            <line x1="{$x}" y1="{$y1}" x2="{$x}" y2="{$y2}" class="type-{$object["type"]}" />
 SVG;
         }
     }
