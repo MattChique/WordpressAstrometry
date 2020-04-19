@@ -14,6 +14,7 @@ defined('ABSPATH') or die( 'No script kiddies please!' );
 define('ASTROMETRY_PLUGIN_BASE', plugin_dir_path(__FILE__));
 
 //Includes
+require_once(ASTROMETRY_PLUGIN_BASE . "astrometrySearch.php");    
 require_once(ASTROMETRY_PLUGIN_BASE . "astrometryData.php");    
 require_once(ASTROMETRY_PLUGIN_BASE . "settings.php");
 require_once(ASTROMETRY_PLUGIN_BASE . "block/editor_block.php");
@@ -68,85 +69,5 @@ function addSettingsAssets() {
     }
 }
 add_action( 'admin_enqueue_scripts', 'addSettingsAssets');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function cf_search_join( $join ) {
-    global $wpdb;
-
-    if ( is_search() ) {    
-        $join .=' LEFT JOIN '.$wpdb->postmeta. ' ON '. $wpdb->posts . '.ID = ' . $wpdb->postmeta . '.post_id ';
-    }
-
-    return $join;
-}
-add_filter('posts_join', 'cf_search_join' );
-
-function cf_search_where( $where ) {
-    global $pagenow, $wpdb;
-
-    if ( is_search() ) {
-        $where = preg_replace(
-            "/\(\s*".$wpdb->posts.".post_title\s+LIKE\s*(\'[^\']+\')\s*\)/",
-            "(".$wpdb->posts.".post_title LIKE $1) OR (".$wpdb->postmeta.".meta_value LIKE $1)", $where );
-    }
-
-    return $where;
-}
-add_filter( 'posts_where', 'cf_search_where' );
-
-function cf_search_distinct( $where ) {
-    global $wpdb;
-
-    if ( is_search() ) {
-        return "DISTINCT";
-    }
-
-    return $where;
-}
-add_filter( 'posts_distinct', 'cf_search_distinct' );
 
 ?>
