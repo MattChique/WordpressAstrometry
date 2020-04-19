@@ -18,6 +18,7 @@ require_once(explode('wp-content', $_SERVER['SCRIPT_FILENAME'])[0] . 'wp-load.ph
 
 //require Annotator Class
 require_once(__DIR__."\annotator.php");
+require_once(__DIR__."\alternateCatalogues.php");
 require_once(dirname(__DIR__)."\astrometryData.php");
 
 //Query
@@ -29,9 +30,13 @@ $displayWidth = $_GET["w"];
 //Read original image annotations
 $data = new AstrometryData($postId, $mediaID);
 $imageUrl = wp_get_attachment_image_src($_GET["mediaid"], 'original');
+$annotations = $data->Get("annotations")["annotations"];
+
+//Check for Alternate Catalogues
+$annotations = AlternateCatalogues::CheckAlternate($annotations);            
 
 //Create Annotator and draw
-$annotator = Annotator::Svg($imageUrl, $displayWidth, $data->Get("annotations")["annotations"]);
+$annotator = Annotator::Svg($imageUrl, $displayWidth, $annotations);
 $annotator->SetFont("../assets/font/OpenSans-Regular.ttf",10);
 $annotator->ShowHD($hd);
 $annotator->Draw();
