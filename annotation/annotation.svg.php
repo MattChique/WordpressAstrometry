@@ -114,7 +114,7 @@ SVG;
 
         if($boxed == true) {
 
-            $boxX = $x - floor($textWidth / 2);
+            $boxX = $x - floor($textWidth / 2) - 1; //1 for border
             $boxY = $y - $objectRadius - $this->textOffsetToObject - $this->textBoxPadding*2 - $textHeight;
             $boxW = $textWidth;
             $boxH = $textHeight + $this->textBoxPadding*2 - 2; //2 for border
