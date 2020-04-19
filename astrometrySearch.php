@@ -13,7 +13,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-//Extend the wordpress search engine to search also in meta data
+/*
+    Extend the wordpress search engine to search also in meta data
+    Taken from https://gist.github.com/gradosevic/1d254f3676a10c7393b95bfc43c69cfa
+*/
+
 function cf_search_join( $join ) {
     global $wpdb;
 
