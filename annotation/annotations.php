@@ -28,12 +28,14 @@ $mediaID = $_GET["mediaid"];
 $displayWidth = $_GET["w"];
 
 //Read original image annotations
+$settings = get_option('astrometry_settings');
 $data = new AstrometryData($postId, $mediaID);
 $imageUrl = wp_get_attachment_image_src($_GET["mediaid"], 'original');
 $annotations = $data->Get("annotations")["annotations"];
 
 //Check for Alternate Catalogues
-$annotations = AlternateCatalogues::CheckAlternate($annotations);            
+if(isset($settings["additionalCatalogues"]))
+    $annotations = AlternateCatalogues::CheckAlternate($annotations);            
 
 //Create Annotator and draw
 $annotator = Annotator::Svg($imageUrl, $displayWidth, $annotations);

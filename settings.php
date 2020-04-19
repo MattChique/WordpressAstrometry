@@ -54,12 +54,20 @@ class AstrometrySettings {
 
 			<script>
 				jQuery(document).ready(function($){
+
+					//Load color picker
 					jQuery('.color-picker').iris({
 						defaultColor: true,
 						change: function(event, ui){},
 						clear: function() {},
 						hide: true,
 						palettes: true
+					});
+
+					//Set fields for additional catalogues disabled/enables
+					jQuery('.additionalCatalogues').prop("disabled", !jQuery('#additionalCatalogues').is(':checked'))
+					jQuery('#additionalCatalogues').change(function() {
+						jQuery('.additionalCatalogues').prop("disabled", !jQuery('#additionalCatalogues').is(':checked'))
 					});
 				});
 			</script>
@@ -150,6 +158,22 @@ class AstrometrySettings {
 			'astrometry-settings-admin',
 			'astrometry_settings_annotation_section'
 		);
+
+		add_settings_field(
+            'additionalCatalogues', 
+            __('Additional Catalogues'), 
+			array( $this, 'additionalCatalogues_callback' ),
+			'astrometry-settings-admin',
+			'astrometry_settings_annotation_section'
+		);
+
+		add_settings_field(
+            'color_messier', 
+            __('Messier catalogue color'), 
+			array( $this, 'messier_color_callback' ),
+			'astrometry-settings-admin',
+			'astrometry_settings_annotation_section'
+		);
 	}
 
 	public function astrometry_settings_sanitize($input) {
@@ -174,6 +198,12 @@ class AstrometrySettings {
 		}
 		if ( isset( $input['annotation_css'] ) ) {
 			$sanitary_values['annotation_css'] = sanitize_text_field( $input['annotation_css'] );
+		}
+		if ( isset( $input['additionalCatalogues'] ) ) {
+			$sanitary_values['additionalCatalogues'] = $input['additionalCatalogues'];
+		}
+		if ( isset( $input['color_messier'] ) ) {
+			$sanitary_values['color_messier'] = sanitize_text_field( $input['color_messier'] );
 		}
 		return $sanitary_values;
 	}
@@ -237,4 +267,20 @@ class AstrometrySettings {
         );
         echo "<br>" . __('Additional CSS for SVG annotation styling');
 	}
+
+	public function additionalCatalogues_callback() {
+		printf(
+			'<input type="checkbox" id="additionalCatalogues" name="astrometry_settings[additionalCatalogues]" value="1" %s>',
+			isset( $this->astrometry_settings_options['additionalCatalogues'] ) ? "checked" : ""
+        );
+		echo __('Objects of NGC, IC are shown as objects of additional cataglogues (Messier)');
+	}
+
+	public function messier_color_callback() {
+		printf(
+			'<input class="color-picker additionalCatalogues" type="text" data-default-color="#CCC" name="astrometry_settings[color_messier]" id="color_messier" value="%s">',
+			isset( $this->astrometry_settings_options['color_messier'] ) ? esc_attr( $this->astrometry_settings_options['color_messier']) : '#CCC'
+        );
+        echo "<br>" . __('Color for Messier annotation');
+	}	
 }

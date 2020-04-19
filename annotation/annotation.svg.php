@@ -24,11 +24,12 @@ class SvgAnnotation extends Annotation
         $base64Font = base64_encode(file_get_contents(realpath($this->fontPath)));
 
         $settings = get_option('astrometry_settings');
-        $color_ngc = $settings['color_ngc'];
-        $color_ic = $settings['color_ic'];
-        $color_bright = $settings['color_bright'];
-        $color_hd = $settings['color_hd'];
-        $annotation_css = $settings['annotation_css'];
+        $color_ngc = isset($settings['color_ngc']) ? $settings['color_ngc'] : "#cc0000";
+        $color_ic = isset($settings['color_ic']) ? $settings['color_ic'] : "#6699FF";
+        $color_bright = isset($settings['color_bright']) ? $settings['color_bright'] : "#CCCCCC";
+        $color_hd = isset($settings['color_hd']) ? $settings['color_hd'] : "#CCCCCC";
+        $color_messier = isset($settings['color_messier']) ? $settings['color_messier'] : "#2266BB";
+        $annotation_css = isset($settings['annotation_css']) ? $settings['annotation_css'] : "";
 
         echo <<<SVG
 <?xml version="1.0" standalone="no"?>
@@ -48,9 +49,10 @@ class SvgAnnotation extends Annotation
                 rect { fill:rgba(0,0,0,0.5); }
 
                 rect.type-ic, line.type-ic, ellipse.type-ic { stroke: {$color_ic}; }
-                rect.type-ngc, line.type-ngc, ellipse.type-ngc { stroke: {$color_ngc}; }                
-                rect.type-bright, line.type-bright, ellipse.type-bright { stroke: {$color_bright}; }                
-                rect.type-hd, line.type-hd, ellipse.type-hd { stroke: {$color_hd}; }                
+                rect.type-ngc, line.type-ngc, ellipse.type-ngc { stroke: {$color_ngc}; }
+                rect.type-bright, line.type-bright, ellipse.type-bright { stroke: {$color_bright}; }
+                rect.type-hd, line.type-hd, ellipse.type-hd { stroke: {$color_hd}; }
+                rect.type-messier, line.type-messier, ellipse.type-messier { stroke: {$color_messier}; }
 
                 {$annotation_css}
 
