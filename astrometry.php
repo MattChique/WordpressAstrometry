@@ -19,7 +19,7 @@ require_once(ASTROMETRY_PLUGIN_BASE . "settings.php");
 require_once(ASTROMETRY_PLUGIN_BASE . "block/editor_block.php");
 
 //Einstellungen und Ergänzungen
-$astrometry_settings_options = get_option( 'astrometry_settings_option_name' );
+$astrometry_settings_options = get_option( 'astrometry_settings' );
 add_filter('jpeg_quality', function($arg) { return $astrometry_settings_options['image_quality']; } );
 
 //Init
@@ -51,16 +51,23 @@ add_action('enqueue_block_editor_assets', 'addAstrometryEditorCss');
 //Callback for Ajax Solving
 function astronomyImageAction_callback() {       
     $astrometryData = new AstrometryData($_POST['postId'], $_POST['mediaId']);
-    echo $astrometryData->Solve(get_option('astrometry_settings_option_name')['api_key']);
+    echo $astrometryData->Solve(get_option('astrometry_settings')['api_key']);
 
     wp_die();
 }
 add_action('wp_ajax_astronomyImageAction', 'astronomyImageAction_callback');	
 
 //Settings
-if ( is_admin() )
-	$astrometry_settings = new AstrometrySettings();
-
+if ( is_admin() ) {
+    $astrometry_settings = new AstrometrySettings();
+}
+function addSettingsAssets() {
+    if ( is_admin() ) {
+        wp_enqueue_style( 'wp-color-picker' );
+        wp_enqueue_script( 'iris', admin_url( 'js/iris.min.js' ), array( 'jquery-ui-draggable', 'jquery-ui-slider', 'jquery-touch-punch' ), false, 1 );
+    }
+}
+add_action( 'admin_enqueue_scripts', 'addSettingsAssets');
 
 
 

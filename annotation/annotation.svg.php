@@ -9,24 +9,37 @@ class SvgAnnotation extends Annotation
 
         $base64Font = base64_encode(file_get_contents(realpath($this->fontPath)));
 
+        $settings = get_option('astrometry_settings');
+        $color_ngc = $settings['color_ngc'];
+        $color_ic = $settings['color_ic'];
+        $color_bright = $settings['color_bright'];
+        $color_hd = $settings['color_hd'];
+        $annotation_css = $settings['annotation_css'];
+
         echo <<<SVG
 <?xml version="1.0" standalone="no"?>
         <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
         <svg  version="1.1" viewBox="0 0 {$this->displayWidth} {$this->displayHeight}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
         <defs xmlns="http://www.w3.org/2000/svg">
             <style type="text/css">
-            @font-face {
-                font-family: 'Open Sans';
-                src: url(data:application/font-woff;charset=utf-8;base64,{$base64Font}) format('woff');
-                font-weight: normal;
-                font-style: normal;
-            }
+                @font-face {
+                    font-family: 'Open Sans';
+                    src: url(data:application/font-woff;charset=utf-8;base64,{$base64Font}) format('woff');
+                    font-weight: normal;
+                    font-style: normal;
+                }
+
                 text { fill:#CCC; stroke:none; font-family:Open Sans, Verdana, Arial; font-size:{$this->fontSize}px; }
                 rect, line, ellipse { stroke:#CCC; }
                 rect { fill:rgba(0,0,0,0.5); }
 
-                rect.type-ic, line.type-ic, ellipse.type-ic { stroke: #6699ff; }
-                rect.type-ngc, line.type-ngc, ellipse.type-ngc { stroke: #cc0000; }                
+                rect.type-ic, line.type-ic, ellipse.type-ic { stroke: {$color_ic}; }
+                rect.type-ngc, line.type-ngc, ellipse.type-ngc { stroke: {$color_ngc}; }                
+                rect.type-bright, line.type-bright, ellipse.type-bright { stroke: {$color_bright}; }                
+                rect.type-hd, line.type-hd, ellipse.type-hd { stroke: {$color_hd}; }                
+
+                {$annotation_css}
+                
             </style>
             <filter id="dropShadow" x="0" y="0" width="200%" height="200%">
                 <feOffset result="offOut" in="SourceAlpha" dx="1.5" dy="1.5"/>
@@ -34,6 +47,7 @@ class SvgAnnotation extends Annotation
                 <feBlend in="SourceGraphic" in2="blurOut" mode="normal"/>
             </filter>
         </defs>
+
 
         <g xmlns="http://www.w3.org/2000/svg" fill="none"  fill-rule="evenodd" stroke-linecap="square" stroke-linejoin="bevel" filter="url(#dropShadow)">
             <g fill="none" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)" >
