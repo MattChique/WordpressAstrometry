@@ -1,0 +1,20 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: Astrometry\n"
+"Language: de_DE\n"
+
+msgid "Fieldradius"
+msgstr "Feldradius"
+
+msgid "Pixelscale"
+msgstr "Pixelskala"
+
+msgid "Job"
+msgstr ""
+
+msgid "Objects"
+msgstr "Objekte"

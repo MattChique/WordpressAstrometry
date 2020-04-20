@@ -70,12 +70,12 @@ function astrometry_render($attributes, $content) {
             array_push($tags, "<a href='/?s=".$text."'>".$text."</a>");
         }        
         
-        $add .= '<label>' . __('RA') . '</label><p class="col2">' . AstrometryData::RA($info["calibration"]["ra"]) . '</p>';
-        $add .= '<label class="col3">' . __('DEC') . '</label><p class="col4">' . AstrometryData::DEC($info["calibration"]["dec"]) . '</p>';
-        $add .= '<label>' . __('Fieldradius') . '</label><p class="col2">' . AstrometryData::DEC($info["calibration"]["radius"]) . '</p>';
-        $add .= '<label class="col3">' . __('Pixelscale') . '</label><p class="col4">' . round($info["calibration"]["pixscale"],4) . '</p>';
-        $add .= '<label>' . __('Job') . '</label><p><a href="http://nova.astrometry.net/status/'.$data->Get("subid").'" target="_blank">'.$data->Get("subid").'</a></p>';
-        $add .= '<label>' . __('Objects') . '</label><p class="objects">' . join($tags,", ") . '</p>';
+        $add .= '<label>' . __('RA', 'astrometry') . '</label><p class="col2">' . AstrometryData::RA($info["calibration"]["ra"]) . '</p>';
+        $add .= '<label class="col3">' . __('DEC', 'astrometry') . '</label><p class="col4">' . AstrometryData::DEC($info["calibration"]["dec"]) . '</p>';
+        $add .= '<label>' . __('Fieldradius', 'astrometry') . '</label><p class="col2">' . AstrometryData::DEC($info["calibration"]["radius"]) . '</p>';
+        $add .= '<label class="col3">' . __('Pixelscale', 'astrometry') . '</label><p class="col4">' . round($info["calibration"]["pixscale"],4) . '</p>';
+        $add .= '<label>' . __('Job', 'astrometry') . '</label><p><a href="http://nova.astrometry.net/status/'.$data->Get("subid").'" target="_blank">'.$data->Get("subid").'</a></p>';
+        $add .= '<label>' . __('Objects', 'astrometry') . '</label><p class="objects">' . join($tags,", ") . '</p>';
 
         $content = str_replace("{SKYPLOT}", "<img src='//nova.astrometry.net/sky_plot/zoom1/" . $submission["job_calibrations"][0][1] . "'>", $content);
     }

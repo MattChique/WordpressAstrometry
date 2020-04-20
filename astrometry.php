@@ -45,10 +45,15 @@ function init_astrometry() {
     if(!isset($post))
         return;
 
+    //CSS
     addAstrometryCss();
 
+    //Scripts
     wp_enqueue_script('astrometry-javascript', plugins_url('/assets/js/astrometry.js', __FILE__), array('jquery'), '', false);
     wp_localize_script('astrometry-javascript', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'postId' => $post->ID) );
+
+    //Localisation
+    load_plugin_textdomain( 'astrometry', false, dirname(plugin_basename(__FILE__)) . '/languages' );
 }
 add_filter('wp', 'init_astrometry');
 
