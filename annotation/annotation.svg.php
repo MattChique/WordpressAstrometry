@@ -17,6 +17,12 @@ class SvgAnnotation extends Annotation
 {
     private $mime = "image/svg+xml";
 
+    public function SetGrid($grid)
+    {
+        $this->grid = $grid;
+    }
+    private $grid = null;
+
     public function Draw()
     {
         header('Content-type: ' . $this->mime); 
@@ -69,6 +75,10 @@ class SvgAnnotation extends Annotation
             <g fill="none" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)" >
         
 SVG;
+
+
+        if(isset($this->grid))
+            $this->grid->Draw($this->displayRatio);
 
         foreach($this->annotations as $object)
         {	
@@ -139,5 +149,7 @@ SVG;
 SVG;
         }
     }
+
+
 }
 ?>

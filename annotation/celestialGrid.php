@@ -1,0 +1,292 @@
+<?php
+/*
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
+class CelestialGrid 
+{
+    private $calibration;
+    private $pixelRadius;
+    private $grid;
+    private $steps;
+    private $scale;
+
+    public function __construct($c)
+    {
+        $this->calibration = $c;
+        
+        $umfang = (360 * 60 * 60 / $c["pixscale"]) ;
+
+        $this->pixelRadius = $umfang / (2 * M_PI);
+        $this->scale = $this->GetScale();
+        $this->steps = $this->GetSteps();   
+    }
+
+    public function CalculateGrid($imageRatio)
+    {    
+        $cLat = $this->calibration["dec"];
+        $cLon = $this->calibration["ra"];
+
+        $center = new Coord($cLat,$cLon);
+        $center->x = "0px";
+        $center->y = "0px";
+
+        $centerOffset = new Coord($this->RoundC($cLat),$this->RoundC($cLon));
+        $centerOffset->x = $this->GetDistance($center, new Coord($cLat,$this->RoundC($cLon))) * $imageRatio;
+        $centerOffset->y = $this->GetDistance($center, new Coord($this->RoundC($cLat),$cLon)) * $imageRatio;       
+
+        //x = ra = lon
+        for($x = -$this->steps; $x < $this->steps; $x++)
+        {
+            for($y = -$this->steps; $y < $this->steps; $y++)
+            {
+                $coord = new Coord($centerOffset->lat - ($y*$this->scale), $centerOffset->lon - ($x*$this->scale));
+
+                $yOffsetCoord = new Coord($centerOffset->lat, $coord->lon);
+                $xOffsetCoord = new Coord($coord->lat, $centerOffset->lon);
+
+                $xc = $this->GetDistance($coord, $xOffsetCoord) * $imageRatio;
+                $yc = $this->GetDistance($coord, $yOffsetCoord) * $imageRatio;
+
+                if($x < 0) 
+                    $xc = ($xc )*-1 + $centerOffset->x;
+                else
+                    $xc = $xc + $centerOffset->x;
+
+                if($y < 0) 
+                    $yc = ($yc)*-1 + $centerOffset->y;
+                else
+                    $yc = $yc + $centerOffset->y;
+
+                $coord->y = $yc;
+                $coord->x = $xc;
+
+                $this->grid[$x][$y] = $coord;
+            }
+        }
+    }
+
+    public function Draw($imageRatio)
+    {    
+        $rot = $this->calibration["orientation"]*-1;
+
+        echo <<<SVG
+        
+        <g fill="none" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)" style="transform: translate(50%,50%) rotate({$rot}deg)" >
+
+SVG;
+
+        $this->CalculateGrid($imageRatio);
+
+        //Draw lines for Dec
+        for($x = -$this->steps; $x < $this->steps; $x++)
+        {
+            $coords = "";
+            for($y = -$this->steps; $y < $this->steps; $y++)
+            {
+                $coord = $this->grid[$x][$y];
+                $coords .= $coord->x . "," .$coord->y . " ";
+            }
+
+            echo '<polyline points="'.$coords.'" stroke-dasharray="2,2" style="fill:none;stroke:rgba(255,255,255,0.3);stroke-width:1" />';
+            echo "\n";
+        }
+        
+        //Draw lines for Ra
+        for($x = -$this->steps; $x < $this->steps; $x++)
+        {
+            $coords = "";
+            for($y = -$this->steps; $y < $this->steps; $y++)
+            {
+                $coord = $this->grid[$y][$x];
+                $coords .= $coord->x . "," .$coord->y . " ";
+            }
+
+            echo '<polyline points="'.$coords.'" stroke-dasharray="2,2" style="fill:none;stroke:rgba(255,255,255,0.3);stroke-width:1" />';
+            echo "\n";
+        }
+
+        //Draw Text
+        for($x = -$this->steps; $x < $this->steps; $x++)
+        {
+            for($y = -$this->steps; $y < $this->steps; $y++)
+            {
+                if($x == 0 || $y == 0 || true)
+                {
+                    $coord = $this->grid[$y][$x];
+
+                
+                    echo '<text style="fill:rgba(255,255,255,0.3); transform:translate('.($coord->x-5).'px, '.($coord->y-20).'px) rotate(-90deg) ">'.$coord->lon.'</text>';
+                    echo "\n";
+                
+                    echo '<text style="fill:rgba(255,255,255,0.3); transform:translate('.($coord->x+20).'px, '.($coord->y-5).'px) rotate(0deg)">'.$coord->lat.'</text>';
+                }
+            }
+        }
+
+        echo <<<SVG
+
+        </g>
+SVG;
+    }
+
+    public function GetSteps()
+    {
+        $steps = floor(($this->calibration["radius"]*2) / $this->scale) + 2 ;
+
+        return $steps;        
+    }
+
+    public function GetScale($minLine = 3)
+    {
+        $pWidth = $this->calibration["radius"] * 2;
+
+        if($pWidth / 1 > $minLine)
+            return 1;
+
+        if($pWidth / 0.5 > $minLine)
+            return 0.5;
+            
+        if($pWidth / 0.2 > $minLine)
+            return 0.2;
+
+        if($pWidth / 0.1 > $minLine)
+            return 0.1;
+    }
+
+    public function RoundC($coord)
+    {
+        if($this->scale >= 0.5)
+        {
+            return floor($coord * 2) / 2;
+        }
+
+        if($this->scale == 0.2)
+        {
+            return round($coord * 5) / 5;
+        }
+
+        return round($coord,1);
+    }
+
+    public function GetDistance($coord1, $coord2)
+    {
+        // convert from degrees to radians
+        $latFrom = deg2rad($coord1->lat);
+        $lonFrom = deg2rad($coord1->lon);
+        $latTo = deg2rad($coord2->lat);
+        $lonTo = deg2rad($coord2->lon);
+
+        $lonDelta = $lonTo - $lonFrom;
+        $a = pow(cos($latTo) * sin($lonDelta), 2) +
+            pow(cos($latFrom) * sin($latTo) - sin($latFrom) * cos($latTo) * cos($lonDelta), 2);
+        $b = sin($latFrom) * sin($latTo) + cos($latFrom) * cos($latTo) * cos($lonDelta);
+
+        $angle = atan2(sqrt($a), $b);
+        return $angle * $this->pixelRadius;
+    }
+
+    public static function DEC($dec)
+	{
+		// Converts decimal format to DMS ( Degrees / minutes / seconds ) 
+		$vars = explode(".",$dec);
+		$deg = $vars[0];
+		$tempma = "0.".$vars[1];
+
+		$tempma = $tempma * 3600;
+		$min = floor($tempma / 60);
+		$sec = $tempma - ($min*60);
+
+        $return = $deg . "° ";
+
+        if($min > 0 || $sec > 0)
+            $return .= $min . "' ";
+
+        if($sec > 0)
+            $return .= floor($sec) . "''";
+
+		return $return;
+	}    
+
+	public static function RA($dec)
+	{		
+		// Converts decimal format to HMS ( Hour / minutes / seconds ) 
+		$vars = explode(".",$dec);
+		$deg = floor($vars[0]/(360/24));
+		$tempma = "0.".$vars[1];
+
+		$tempma = $tempma * 3600;
+		$min = floor($tempma / 60);
+		$sec = $tempma - ($min*60);
+
+        $return = $deg . "h ";
+
+        if($min > 0 || $sec > 0)
+            $return .= $min . "' ";
+
+        if($sec > 0)
+            $return .= floor($sec) . "''";
+
+		return $return;
+    }  
+    
+    public function DD($text)
+    {
+
+        if($text != "")
+        {
+        echo <<<SVG
+        
+        <g fill="none" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)" >
+
+            <text x="10" y="10" style="fill:#FFF; ">$text</text>
+            </g>
+
+
+SVG;
+        }
+    }
+}
+
+class Coord
+{
+    public $lat;
+    public $lon;
+    public $x = 0;
+    public $y = 0;
+
+    //Latitude/Declination, Longitude/Right Ascension
+    public function __construct($lat,$lon)
+    {
+        $this->lat = $lat;
+        $this->lon = $lon;
+    }
+
+    public function Draw($text = "")
+    {
+        echo <<<SVG
+        
+            <ellipse rx="2" ry="2" cx="{$this->x}" cy="{$this->y}" style="fill:#000!important;"/>
+SVG;
+
+        if($text != "")
+        {
+        echo <<<SVG
+        
+            <text x="{$this->x}" y="{$this->y}" style="fill:#000; ">$text</text>
+SVG;
+        }
+    }
+}
+
+?>
