@@ -15,46 +15,59 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class CelestialGrid 
 {
-    private $calibration;
-    private $pixelRadius;
-    private $grid;
+    private $cOrientation;
+    private $cCenterRa;
+    private $cCenterDec;
+    private $cRadius;
+    private $cRadiusPx;
+
+    private $gridArray;
+
     private $steps;
     private $scale;
 
     public function __construct($c)
     {
-        $this->calibration = $c;
-        
-        $umfang = (360 * 60 * 60 / $c["pixscale"]) ;
+        //Calibration data
+        $this->cOrientation     = $c["orientation"];    //rotation
+        $this->cCenterRa        = $c["ra"];             //center ra
+        $this->cCenterDec       = $c["dec"];            //center dec
+        $this->cRadius          = $c["radius"];         //fieldradius
+        $this->cRadiusPx        = (360 * 60 * 60 / $c["pixscale"]) / (2 * M_PI); //Radius in pixels
 
-        $this->pixelRadius = $umfang / (2 * M_PI);
+        //Calculate scale and steps
         $this->scale = $this->GetScale();
         $this->steps = $this->GetSteps();   
     }
 
     public function CalculateGrid($imageRatio)
     {    
-        $cLat = $this->calibration["dec"];
-        $cLon = $this->calibration["ra"];
+        $cLat = $this->cCenterDec;
+        $cLon = $this->cCenterRa;
 
+        //Coord of real center
         $center = new Coord($cLat,$cLon);
         $center->x = "0px";
         $center->y = "0px";
 
+        //Nearest coord on scale
         $centerOffset = new Coord($this->RoundC($cLat),$this->RoundC($cLon));
         $centerOffset->x = $this->GetDistance($center, new Coord($cLat,$this->RoundC($cLon))) * $imageRatio;
         $centerOffset->y = $this->GetDistance($center, new Coord($this->RoundC($cLat),$cLon)) * $imageRatio;       
 
-        //x = ra = lon
+        //Calculate coords in grid for x and y axes
         for($x = -$this->steps; $x < $this->steps; $x++)
         {
             for($y = -$this->steps; $y < $this->steps; $y++)
             {
+                //New coord in grid
                 $coord = new Coord($centerOffset->lat - ($y*$this->scale), $centerOffset->lon - ($x*$this->scale));
 
+                //Offset coords for both axes
                 $yOffsetCoord = new Coord($centerOffset->lat, $coord->lon);
                 $xOffsetCoord = new Coord($coord->lat, $centerOffset->lon);
 
+                //Calculate distance to offset coords
                 $xc = $this->GetDistance($coord, $xOffsetCoord) * $imageRatio;
                 $yc = $this->GetDistance($coord, $yOffsetCoord) * $imageRatio;
 
@@ -68,17 +81,19 @@ class CelestialGrid
                 else
                     $yc = $yc + $centerOffset->y;
 
+                //Set x and y position
                 $coord->y = $yc;
                 $coord->x = $xc;
 
-                $this->grid[$x][$y] = $coord;
+                //Put in array
+                $this->gridArray[$x][$y] = $coord;
             }
         }
     }
 
     public function Draw($imageRatio)
     {    
-        $rot = $this->calibration["orientation"]*-1;
+        $rot = $this->cOrientation * -1;
 
         echo <<<SVG
         
@@ -86,6 +101,7 @@ class CelestialGrid
 
 SVG;
 
+        //Calculate Grid Array
         $this->CalculateGrid($imageRatio);
 
         //Draw lines for Dec
@@ -94,7 +110,10 @@ SVG;
             $coords = "";
             for($y = -$this->steps; $y < $this->steps; $y++)
             {
-                $coord = $this->grid[$x][$y];
+                //Get coord
+                $coord = $this->gridArray[$x][$y];
+
+                //Set polyline position
                 $coords .= $coord->x . "," .$coord->y . " ";
             }
 
@@ -108,7 +127,10 @@ SVG;
             $coords = "";
             for($y = -$this->steps; $y < $this->steps; $y++)
             {
-                $coord = $this->grid[$y][$x];
+                //Get coord
+                $coord = $this->gridArray[$y][$x];
+
+                //Set polyline position
                 $coords .= $coord->x . "," .$coord->y . " ";
             }
 
@@ -123,12 +145,10 @@ SVG;
             {
                 if($x == 0 || $y == 0 || true)
                 {
-                    $coord = $this->grid[$y][$x];
-
+                    $coord = $this->gridArray[$y][$x];
                 
                     echo '<text style="fill:rgba(255,255,255,0.3); transform:translate('.($coord->x-5).'px, '.($coord->y-20).'px) rotate(-90deg) ">'.$coord->lon.'</text>';
-                    echo "\n";
-                
+                    echo "\n";                
                     echo '<text style="fill:rgba(255,255,255,0.3); transform:translate('.($coord->x+20).'px, '.($coord->y-5).'px) rotate(0deg)">'.$coord->lat.'</text>';
                 }
             }
@@ -140,16 +160,18 @@ SVG;
 SVG;
     }
 
+    //Calculate how many steps it needs to fill out the complete image area
     public function GetSteps()
     {
-        $steps = floor(($this->calibration["radius"]*2) / $this->scale) + 2 ;
+        $steps = floor(($this->cRadius*2) / $this->scale) + 2 ;
 
         return $steps;        
     }
 
+    //Calculate the scale to show for a minimum required lines; return distances in deg.
     public function GetScale($minLine = 3)
     {
-        $pWidth = $this->calibration["radius"] * 2;
+        $pWidth = $this->cRadius * 2;
 
         if($pWidth / 1 > $minLine)
             return 1;
@@ -164,6 +186,7 @@ SVG;
             return 0.1;
     }
 
+    //Rounds a number scale-dependent
     public function RoundC($coord)
     {
         if($this->scale >= 0.5)
@@ -179,6 +202,7 @@ SVG;
         return round($coord,1);
     }
 
+    //Vincenty Formula
     public function GetDistance($coord1, $coord2)
     {
         // convert from degrees to radians
@@ -193,7 +217,7 @@ SVG;
         $b = sin($latFrom) * sin($latTo) + cos($latFrom) * cos($latTo) * cos($lonDelta);
 
         $angle = atan2(sqrt($a), $b);
-        return $angle * $this->pixelRadius;
+        return $angle * $this->cRadiusPx;
     }
 
     public static function DEC($dec)
