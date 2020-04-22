@@ -13,6 +13,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+require_once("coordinate.php");
+
 class CelestialGrid 
 {
     private $cOrientation;
@@ -21,10 +23,10 @@ class CelestialGrid
     private $cRadius;
     private $cRadiusPx;
 
-    private $gridArray;
-
     private $steps;
     private $scale;
+
+    private $gridArray;
 
     public function __construct($c)
     {
@@ -50,14 +52,10 @@ class CelestialGrid
         $center->x = "0px";
         $center->y = "0px";
 
-        //$center->Draw("center:" . $center->lat . " / ". $center->lon);
-
         //Nearest coord on scale
         $centerOffset = new Coord($this->RoundC($cLat),$this->RoundC($cLon));
         $centerOffset->x = $this->GetDistance($center, new Coord($cLat,$this->RoundC($cLon))) * $imageRatio;
         $centerOffset->y = $this->GetDistance($center, new Coord($this->RoundC($cLat),$cLon)) * $imageRatio;
-
-        //$centerOffset->Draw("offset:" . $centerOffset->lat . " / ". $centerOffset->lon);
 
         //Calculate coords in grid for x and y axes
         for($x = -$this->steps; $x < $this->steps; $x++)
@@ -223,98 +221,7 @@ SVG;
         $angle = atan2(sqrt($a), $b);
         return $angle * $this->cRadiusPx;
     }
-
-    public static function DEC($dec)
-	{
-		// Converts decimal format to DMS ( Degrees / minutes / seconds ) 
-		$vars = explode(".",$dec);
-		$deg = $vars[0];
-		$tempma = "0.".$vars[1];
-
-		$tempma = $tempma * 3600;
-		$min = floor($tempma / 60);
-		$sec = $tempma - ($min*60);
-
-        $return = $deg . "° ";
-
-        if($min > 0 || $sec > 0)
-            $return .= $min . "' ";
-
-        if($sec > 0)
-            $return .= floor($sec) . "''";
-
-		return $return;
-	}    
-
-	public static function RA($dec)
-	{		
-		// Converts decimal format to HMS ( Hour / minutes / seconds ) 
-		$vars = explode(".",$dec);
-		$deg = floor($vars[0]/(360/24));
-		$tempma = "0.".$vars[1];
-
-		$tempma = $tempma * 3600;
-		$min = floor($tempma / 60);
-		$sec = $tempma - ($min*60);
-
-        $return = $deg . "h ";
-
-        if($min > 0 || $sec > 0)
-            $return .= $min . "' ";
-
-        if($sec > 0)
-            $return .= floor($sec) . "''";
-
-		return $return;
-    }  
-    
-    public function DD($text)
-    {
-
-        if($text != "")
-        {
-        echo <<<SVG
-        
-        <g fill="none" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)" >
-
-            <text x="10" y="10" style="fill:#FFF; ">$text</text>
-            </g>
-
-
-SVG;
-        }
-    }
 }
 
-class Coord
-{
-    public $lat;
-    public $lon;
-    public $x = 0;
-    public $y = 0;
-
-    //Latitude/Declination, Longitude/Right Ascension
-    public function __construct($lat,$lon)
-    {
-        $this->lat = $lat;
-        $this->lon = $lon;
-    }
-
-    public function Draw($text = "")
-    {
-        echo <<<SVG
-        
-            <ellipse rx="2" ry="2" cx="{$this->x}" cy="{$this->y}" style="fill:#fff!important;"/>
-SVG;
-
-        if($text != "")
-        {
-        echo <<<SVG
-        
-            <text x="{$this->x}" y="{$this->y}" style="fill:#fff; ">$text</text>
-SVG;
-        }
-    }
-}
 
 ?>
