@@ -50,10 +50,14 @@ class CelestialGrid
         $center->x = "0px";
         $center->y = "0px";
 
+        //$center->Draw("center:" . $center->lat . " / ". $center->lon);
+
         //Nearest coord on scale
         $centerOffset = new Coord($this->RoundC($cLat),$this->RoundC($cLon));
         $centerOffset->x = $this->GetDistance($center, new Coord($cLat,$this->RoundC($cLon))) * $imageRatio;
-        $centerOffset->y = $this->GetDistance($center, new Coord($this->RoundC($cLat),$cLon)) * $imageRatio;       
+        $centerOffset->y = $this->GetDistance($center, new Coord($this->RoundC($cLat),$cLon)) * $imageRatio;
+
+        //$centerOffset->Draw("offset:" . $centerOffset->lat . " / ". $centerOffset->lon);
 
         //Calculate coords in grid for x and y axes
         for($x = -$this->steps; $x < $this->steps; $x++)
@@ -196,7 +200,7 @@ SVG;
 
         if($this->scale == 0.2)
         {
-            return round($coord * 5) / 5;
+            return floor($coord * 5) / 5;
         }
 
         return round($coord,1);
@@ -300,14 +304,14 @@ class Coord
     {
         echo <<<SVG
         
-            <ellipse rx="2" ry="2" cx="{$this->x}" cy="{$this->y}" style="fill:#000!important;"/>
+            <ellipse rx="2" ry="2" cx="{$this->x}" cy="{$this->y}" style="fill:#fff!important;"/>
 SVG;
 
         if($text != "")
         {
         echo <<<SVG
         
-            <text x="{$this->x}" y="{$this->y}" style="fill:#000; ">$text</text>
+            <text x="{$this->x}" y="{$this->y}" style="fill:#fff; ">$text</text>
 SVG;
         }
     }
