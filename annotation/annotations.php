@@ -17,9 +17,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 require_once(explode('wp-content', $_SERVER['SCRIPT_FILENAME'])[0] . 'wp-load.php');
 
 //require Annotator Class
-require_once(__DIR__."\annotator.php");
-require_once(__DIR__."\alternateCatalogues.php");
-require_once(__DIR__."\celestialGrid.php");
+require_once("annotator.php");
+require_once("alternateCatalogues.php");
+require_once("celestialGrid.php");
 require_once(dirname(__DIR__)."\astrometryData.php");
 
 //Query
@@ -43,7 +43,8 @@ $annotator = Annotator::Svg($imageUrl, $displayWidth, $annotations);
 $annotator->SetFont("../assets/font/OpenSans-Regular.ttf",10);
 $annotator->ShowHD($hd);
 
-$annotator->SetGrid(new CelestialGrid($data->Get("info")["calibration"]));
+if(isset($settings["celestialCoordinateGrid"]))
+    $annotator->SetGrid(new CelestialGrid($data->Get("info")["calibration"]));
 
 $annotator->Draw();
 

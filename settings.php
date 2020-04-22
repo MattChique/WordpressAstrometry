@@ -24,8 +24,8 @@ class AstrometrySettings {
 
 	public function astrometry_settings_add_plugin_page() {
 		add_plugins_page(
-			__('Astrometry Settings'), 
-			__('Astrometry Settings'), 
+			__('Astrometry Settings','astrometry'), 
+			__('Astrometry Settings','astrometry'), 
 			'manage_options',
 			'astrometry-settings', 
 			array( $this, 'astrometry_settings_create_admin_page' )
@@ -38,7 +38,7 @@ class AstrometrySettings {
 
         return array_merge(
         array(
-            'settings' => '<a href="' . admin_url( 'plugins.php?page=astrometry-settings' ) . '">' . __( 'Settings', 'astrometry-settings' ) . '</a>'
+            'settings' => '<a href="' . admin_url( 'plugins.php?page=astrometry-settings' ) . '">' . __( 'Settings', 'astrometry' ) . '</a>'
         ),
         $links
         );
@@ -48,7 +48,7 @@ class AstrometrySettings {
 		$this->astrometry_settings_options = get_option( 'astrometry_settings' ); ?>
 
 		<div class="wrap">
-			<h2><?= __('Astrometry Settings') ?></h2>
+			<h2><?= __('Astrometry Settings','astrometry') ?></h2>
 			<p></p>
 			<?php settings_errors(); ?>
 
@@ -98,7 +98,7 @@ class AstrometrySettings {
 
 		add_settings_field(
             'api_key', 
-            __('API-KEY'), 
+            __('API-KEY','astrometry'), 
 			array( $this, 'api_key_callback' ),
 			'astrometry-settings-admin',
 			'astrometry_settings_setting_section'
@@ -106,7 +106,7 @@ class AstrometrySettings {
 
 		add_settings_field(
             'image_quality', 
-            __('Image Quality'), 
+            __('Image Quality','astrometry'), 
 			array( $this, 'image_quality_callback' ),
 			'astrometry-settings-admin',
 			'astrometry_settings_setting_section'
@@ -114,14 +114,14 @@ class AstrometrySettings {
 
 		add_settings_section(
 			'astrometry_settings_annotation_section',
-			__('Annotation'),
+			__('Annotation','astrometry'),
 			array( $this, 'astrometry_settings_section_info' ),
 			'astrometry-settings-admin' 
 		);
 
 		add_settings_field(
             'color_ngc', 
-            __('NGC catalogue color'), 
+            __('NGC catalogue color','astrometry'), 
 			array( $this, 'ngc_color_callback' ),
 			'astrometry-settings-admin',
 			'astrometry_settings_annotation_section'
@@ -129,7 +129,7 @@ class AstrometrySettings {
 
 		add_settings_field(
             'color_ic', 
-            __('IC catalogue color'), 
+            __('IC catalogue color','astrometry'), 
 			array( $this, 'ic_color_callback' ),
 			'astrometry-settings-admin',
 			'astrometry_settings_annotation_section'
@@ -137,7 +137,7 @@ class AstrometrySettings {
 
 		add_settings_field(
             'color_bright', 
-            __('Bright stars color'), 
+            __('Bright stars color','astrometry'), 
 			array( $this, 'bright_color_callback' ),
 			'astrometry-settings-admin',
 			'astrometry_settings_annotation_section'
@@ -145,7 +145,7 @@ class AstrometrySettings {
 
 		add_settings_field(
             'color_hd', 
-            __('HD catalogue color'), 
+            __('HD catalogue color','astrometry'), 
 			array( $this, 'hd_color_callback' ),
 			'astrometry-settings-admin',
 			'astrometry_settings_annotation_section'
@@ -153,7 +153,7 @@ class AstrometrySettings {
 
 		add_settings_field(
             'annotation_css', 
-            __('Additional CSS'), 
+            __('Additional CSS','astrometry'), 
 			array( $this, 'annotation_css_callback' ),
 			'astrometry-settings-admin',
 			'astrometry_settings_annotation_section'
@@ -161,7 +161,7 @@ class AstrometrySettings {
 
 		add_settings_field(
             'additionalCatalogues', 
-            __('Additional Catalogues'), 
+            __('Additional Catalogues','astrometry'), 
 			array( $this, 'additionalCatalogues_callback' ),
 			'astrometry-settings-admin',
 			'astrometry_settings_annotation_section'
@@ -169,8 +169,24 @@ class AstrometrySettings {
 
 		add_settings_field(
             'color_messier', 
-            __('Messier catalogue color'), 
+            __('Messier catalogue color','astrometry'), 
 			array( $this, 'messier_color_callback' ),
+			'astrometry-settings-admin',
+			'astrometry_settings_annotation_section'
+		);
+
+		add_settings_field(
+            'celestialCoordinateGrid', 
+            __('Celestial coordinate grid','astrometry'), 
+			array( $this, 'celestialCoordinateGrid_callback' ),
+			'astrometry-settings-admin',
+			'astrometry_settings_annotation_section'
+		);
+
+		add_settings_field(
+            'color_celestialCoordinateGrid', 
+            __('Celestial coordinate grid color','astrometry'), 
+			array( $this, 'celestialCoordinateGrid_color_callback' ),
 			'astrometry-settings-admin',
 			'astrometry_settings_annotation_section'
 		);
@@ -205,6 +221,12 @@ class AstrometrySettings {
 		if ( isset( $input['color_messier'] ) ) {
 			$sanitary_values['color_messier'] = sanitize_text_field( $input['color_messier'] );
 		}
+		if ( isset( $input['celestialCoordinateGrid'] ) ) {
+			$sanitary_values['celestialCoordinateGrid'] = $input['celestialCoordinateGrid'];
+		}
+		if ( isset( $input['color_celestialCoordinateGrid'] ) ) {
+			$sanitary_values['color_celestialCoordinateGrid'] = sanitize_text_field( $input['color_celestialCoordinateGrid'] );
+		}
 		return $sanitary_values;
 	}
 
@@ -217,7 +239,7 @@ class AstrometrySettings {
 			'<input class="regular-text" type="text" name="astrometry_settings[api_key]" id="api_key" value="%s">',
 			isset( $this->astrometry_settings_options['api_key'] ) ? esc_attr( $this->astrometry_settings_options['api_key']) : ''
         );
-        echo "<br><a href='http://nova.astrometry.net' target='_blank'>" . __('Get an API Key') . "</a>";
+        echo "<br><a href='http://nova.astrometry.net' target='_blank'>" . __('Get an API Key','astrometry') . "</a>";
 	}
 
 	public function image_quality_callback() {
@@ -225,7 +247,7 @@ class AstrometrySettings {
 			'<input type="number" name="astrometry_settings[image_quality]" id="image_quality" value="%s">',
 			isset( $this->astrometry_settings_options['image_quality'] ) ? esc_attr( $this->astrometry_settings_options['image_quality']) : '82'
         );
-        echo "<br>" . __('Imagequality 1-100. Overrides the global Wordpress setting (82).');
+        echo "<br>" . __('Imagequality 1-100. Overrides the global Wordpress setting (82).','astrometry');
 	}
 
 	public function ngc_color_callback() {
@@ -233,7 +255,7 @@ class AstrometrySettings {
 			'<input class="color-picker" type="text" data-default-color="#cc0000" name="astrometry_settings[color_ngc]" id="color_ngc" value="%s">',
 			isset( $this->astrometry_settings_options['color_ngc'] ) ? esc_attr( $this->astrometry_settings_options['color_ngc']) : '#cc0000'
         );
-        echo "<br>" . __('Color for NGC catalogue annotation');
+        echo "<br>" . __('Color for NGC catalogue annotation','astrometry');
 	}
 
 	public function ic_color_callback() {
@@ -241,7 +263,7 @@ class AstrometrySettings {
 			'<input class="color-picker" type="text" data-default-color="#6699ff" name="astrometry_settings[color_ic]" id="color_ic" value="%s">',
 			isset( $this->astrometry_settings_options['color_ic'] ) ? esc_attr( $this->astrometry_settings_options['color_ic']) : '#6699ff'
         );
-        echo "<br>" . __('Color for IC catalogue annotation');
+        echo "<br>" . __('Color for IC catalogue annotation','astrometry');
 	}
 
 	public function bright_color_callback() {
@@ -249,7 +271,7 @@ class AstrometrySettings {
 			'<input class="color-picker" type="text" data-default-color="#CCC" name="astrometry_settings[color_bright]" id="color_bright" value="%s">',
 			isset( $this->astrometry_settings_options['color_bright'] ) ? esc_attr( $this->astrometry_settings_options['color_bright']) : '#CCC'
         );
-        echo "<br>" . __('Color for bright stars (named stars) annotation');
+        echo "<br>" . __('Color for bright stars (named stars) annotation','astrometry');
 	}
 
 	public function hd_color_callback() {
@@ -257,7 +279,7 @@ class AstrometrySettings {
 			'<input class="color-picker" type="text" data-default-color="#CCC" name="astrometry_settings[color_hd]" id="color_hd" value="%s">',
 			isset( $this->astrometry_settings_options['color_hd'] ) ? esc_attr( $this->astrometry_settings_options['color_hd']) : '#CCC'
         );
-        echo "<br>" . __('Color for HD annotation');
+        echo "<br>" . __('Color for HD annotation','astrometry');
 	}
 
 	public function annotation_css_callback() {
@@ -265,7 +287,7 @@ class AstrometrySettings {
 			'<textarea name="astrometry_settings[annotation_css]" id="annotation_css" class="regular-text">%s</textarea>',
 			isset( $this->astrometry_settings_options['annotation_css'] ) ? esc_attr( $this->astrometry_settings_options['annotation_css']) : ''
         );
-        echo "<br>" . __('Additional CSS for SVG annotation styling');
+        echo "<br>" . __('Additional CSS for SVG annotation styling','astrometry');
 	}
 
 	public function additionalCatalogues_callback() {
@@ -273,7 +295,7 @@ class AstrometrySettings {
 			'<input type="checkbox" id="additionalCatalogues" name="astrometry_settings[additionalCatalogues]" value="1" %s>',
 			isset( $this->astrometry_settings_options['additionalCatalogues'] ) ? "checked" : ""
         );
-		echo __('Objects of NGC, IC are shown as objects of additional cataglogues (Messier)');
+		echo __('Objects of NGC, IC are shown as objects of additional cataglogues (Messier)','astrometry');
 	}
 
 	public function messier_color_callback() {
@@ -281,6 +303,22 @@ class AstrometrySettings {
 			'<input class="color-picker additionalCatalogues" type="text" data-default-color="#CCC" name="astrometry_settings[color_messier]" id="color_messier" value="%s">',
 			isset( $this->astrometry_settings_options['color_messier'] ) ? esc_attr( $this->astrometry_settings_options['color_messier']) : '#CCC'
         );
-        echo "<br>" . __('Color for Messier annotation');
+        echo "<br>" . __('Color for Messier annotation','astrometry');
+	}	
+
+	public function celestialCoordinateGrid_callback() {
+		printf(
+			'<input type="checkbox" id="celestialCoordinateGrid" name="astrometry_settings[celestialCoordinateGrid]" value="1" %s>',
+			isset( $this->astrometry_settings_options['celestialCoordinateGrid'] ) ? "checked" : ""
+        );
+		echo __('Show celestial coordinate grid','astrometry');
+	}
+
+	public function celestialCoordinateGrid_color_callback() {
+		printf(
+			'<input class="color-picker" type="text" data-default-color="#CCC" name="astrometry_settings[color_celestialCoordinateGrid]" id="color_celestialCoordinateGrid" value="%s">',
+			isset( $this->astrometry_settings_options['color_celestialCoordinateGrid'] ) ? esc_attr( $this->astrometry_settings_options['color_celestialCoordinateGrid']) : '#CCC'
+        );
+        echo "<br>" . __('Color for celestial coordinate grid','astrometry');
 	}	
 }

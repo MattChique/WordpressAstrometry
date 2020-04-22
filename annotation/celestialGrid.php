@@ -95,8 +95,14 @@ class CelestialGrid
 
     public function Draw($imageRatio)
     {    
+        //Get color for grid
+        $settings = get_option('astrometry_settings');
+        $color_grid = isset($settings['color_celestialCoordinateGrid']) ? $settings['color_celestialCoordinateGrid'] : "#ccc";
+
+        //Rotation
         $rot = $this->cOrientation * -1;
 
+        //Draw grid group
         echo <<<SVG
         
         <g fill="none" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)" style="transform: translate(50%,50%) rotate({$rot}deg)" >
@@ -119,7 +125,7 @@ SVG;
                 $coords .= $coord->x . "," .$coord->y . " ";
             }
 
-            echo '<polyline points="'.$coords.'" stroke-dasharray="2,2" style="fill:none;stroke:rgba(255,255,255,0.3);stroke-width:1" />';
+            echo '<polyline points="'.$coords.'" stroke-dasharray="2,2" style="fill:none;stroke:'.$color_grid.';stroke-width:1" />';
             echo "\n";
         }
         
@@ -136,7 +142,7 @@ SVG;
                 $coords .= $coord->x . "," .$coord->y . " ";
             }
 
-            echo '<polyline points="'.$coords.'" stroke-dasharray="2,2" style="fill:none;stroke:rgba(255,255,255,0.3);stroke-width:1" />';
+            echo '<polyline points="'.$coords.'" stroke-dasharray="2,2" style="fill:none;stroke:'.$color_grid.';stroke-width:1" />';
             echo "\n";
         }
 
@@ -149,13 +155,14 @@ SVG;
                 {
                     $coord = $this->gridArray[$y][$x];
                 
-                    echo '<text style="fill:rgba(255,255,255,0.3); transform:translate('.($coord->x-5).'px, '.($coord->y-20).'px) rotate(-90deg) ">'.$coord->lon.'</text>';
+                    echo '<text style="fill:'.$color_grid.'; transform:translate('.($coord->x-5).'px, '.($coord->y-20).'px) rotate(-90deg) ">'.$coord->lon.'</text>';
                     echo "\n";                
-                    echo '<text style="fill:rgba(255,255,255,0.3); transform:translate('.($coord->x+20).'px, '.($coord->y-5).'px) rotate(0deg)">'.$coord->lat.'</text>';
+                    echo '<text style="fill:'.$color_grid.'; transform:translate('.($coord->x+20).'px, '.($coord->y-5).'px) rotate(0deg)">'.$coord->lat.'</text>';
                 }
             }
         }
 
+        //Draw grid group end
         echo <<<SVG
 
         </g>
