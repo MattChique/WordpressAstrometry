@@ -13,9 +13,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-require_once(__DIR__."\annotation.php");
-require_once(__DIR__."\annotation.svg.php");
-require_once(__DIR__."\annotation.png.php");
+require_once("annotation.class.php");
+require_once("annotation.svg.class.php");
+require_once("annotation.png.class.php");
+require_once("alternateCatalogues.class.php");
+require_once("celestialGrid.class.php");
+require_once("astrometryData.class.php");
 
 class Annotator 
 {

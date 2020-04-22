@@ -29,7 +29,6 @@ define('ASTROMETRY_PLUGIN_BASE', plugin_dir_path(__FILE__));
 
 //Includes
 require_once(ASTROMETRY_PLUGIN_BASE . "astrometrySearch.php");    
-require_once(ASTROMETRY_PLUGIN_BASE . "astrometryData.php");    
 require_once(ASTROMETRY_PLUGIN_BASE . "settings.php");
 require_once(ASTROMETRY_PLUGIN_BASE . "block/editor_block.php");
 
@@ -69,7 +68,10 @@ function addAstrometryEditorCss() {
 add_action('enqueue_block_editor_assets', 'addAstrometryEditorCss');
 
 //Callback for Ajax Solving
-function astronomyImageAction_callback() {       
+function astronomyImageAction_callback() {      
+  
+    require_once(ASTROMETRY_PLUGIN_BASE . "annotation/astrometryData.class.php"); 
+
     $astrometryData = new AstrometryData($_POST['postId'], $_POST['mediaId']);
     echo $astrometryData->Solve(get_option('astrometry_settings')['api_key']);
 

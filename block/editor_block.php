@@ -13,6 +13,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+require_once(ASTROMETRY_PLUGIN_BASE . "annotation/astrometryData.class.php"); 
+require_once(ASTROMETRY_PLUGIN_BASE . "annotation/coordinate.class.php"); 
+
 //Register Astrometry Image Block
 function astrometry_01_register_block() {
 
@@ -70,9 +73,9 @@ function astrometry_render($attributes, $content) {
             array_push($tags, "<a href='/?s=".$text."'>".$text."</a>");
         }        
         
-        $add .= '<label>' . __('RA', 'astrometry') . '</label><p class="col2">' . AstrometryData::RA($info["calibration"]["ra"]) . '</p>';
-        $add .= '<label class="col3">' . __('DEC', 'astrometry') . '</label><p class="col4">' . AstrometryData::DEC($info["calibration"]["dec"]) . '</p>';
-        $add .= '<label>' . __('Fieldradius', 'astrometry') . '</label><p class="col2">' . AstrometryData::DEC($info["calibration"]["radius"]) . '</p>';
+        $add .= '<label>' . __('RA', 'astrometry') . '</label><p class="col2">' . Coord::RA($info["calibration"]["ra"]) . '</p>';
+        $add .= '<label class="col3">' . __('DEC', 'astrometry') . '</label><p class="col4">' . Coord::DEC($info["calibration"]["dec"]) . '</p>';
+        $add .= '<label>' . __('Fieldradius', 'astrometry') . '</label><p class="col2">' . Coord::DEC($info["calibration"]["radius"]) . '</p>';
         $add .= '<label class="col3">' . __('Pixelscale', 'astrometry') . '</label><p class="col4">' . round($info["calibration"]["pixscale"],4) . '</p>';
         $add .= '<label>' . __('Job', 'astrometry') . '</label><p><a href="http://nova.astrometry.net/status/'.$data->Get("subid").'" target="_blank">'.$data->Get("subid").'</a></p>';
         $add .= '<label>' . __('Objects', 'astrometry') . '</label><p class="objects">' . join($tags,", ") . '</p>';
