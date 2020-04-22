@@ -190,6 +190,10 @@
 .astrometry-data .info {
   color: #AAA;
 }
+.astrometry-data abbr {
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(255,255,255,0.4);
+}
 
 @media (max-width: 900px) {
   .astrometry-data {
