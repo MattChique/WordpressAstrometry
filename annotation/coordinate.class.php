@@ -14,9 +14,10 @@ class Coord
         $this->lon = $lon;
     }
 
-    public static function DEC($dec)
+    // Converts decimal format to DMS ( Degrees / minutes / seconds ) 
+    public static function DegToDms($dec)
 	{
-		// Converts decimal format to DMS ( Degrees / minutes / seconds ) 
+		
 		$vars = explode(".",$dec);
 		$deg = $vars[0];
 		$tempma = "0.".$vars[1];
@@ -26,34 +27,22 @@ class Coord
 		$sec = $tempma - ($min*60);
 
         $return = $deg . "° ";
-
-        if($min > 0 || $sec > 0)
-            $return .= $min . "' ";
-
-        if($sec > 0)
-            $return .= floor($sec) . "''";
+        $return .= $min . "' ";
+        $return .= floor($sec) . "''";
 
 		return $return;
 	}    
 
-	public static function RA($dec)
-	{		
-		// Converts decimal format to HMS ( Hour / minutes / seconds ) 
-		$vars = explode(".",$dec);
-		$deg = floor($vars[0]/(360/24));
-		$tempma = "0.".$vars[1];
+    // Converts decimal format to HMS ( Hour / minutes / seconds ) 
+	public static function DegToHms($dec)
+	{	
+        $hour = floor($dec/15);
+        $min = floor((($dec/15)-$hour)*60);
+        $sec = floor((((($dec/15)-$hour)*60)-$min)*60);
 
-		$tempma = $tempma * 3600;
-		$min = floor($tempma / 60);
-		$sec = $tempma - ($min*60);
-
-        $return = $deg . "h ";
-
-        if($min > 0 || $sec > 0)
-            $return .= $min . "' ";
-
-        if($sec > 0)
-            $return .= floor($sec) . "''";
+        $return = $hour . "h ";
+        $return .= $min . "' ";
+        $return .= $sec . "''";
 
 		return $return;
     } 
