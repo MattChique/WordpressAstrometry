@@ -20,7 +20,7 @@ class Coord
     public $x = 0;
     public $y = 0;
 
-    //Latitude/Declination, Longitude/Right Ascension
+    // Latitude/Declination, Longitude/Right Ascension
     public function __construct($lat,$lon)
     {
         $this->lat = $lat;
@@ -29,11 +29,9 @@ class Coord
 
     // Converts decimal format to DMS ( Degrees / minutes / seconds ) 
     public static function DegToDms($dec)
-    {
-        $vars = explode(".",$dec);
-        $deg = $vars[0];
-        $tempma = "0.".$vars[1];
-
+    {        
+        $deg = floor($dec);
+        $tempma = $dec - $deg;
         $tempma = $tempma * 3600;
         $min = floor($tempma / 60);
         $sec = $tempma - ($min*60);
@@ -56,7 +54,7 @@ class Coord
         $return .= $min . "' ";
         $return .= $sec . "''";
 
-	return $return;
+	    return $return;
     } 
 }
 ?>
