@@ -36,6 +36,7 @@ class SvgAnnotation extends Annotation
         $color_hd = isset($settings['color_hd']) ? $settings['color_hd'] : "#CCCCCC";
         $color_messier = isset($settings['color_messier']) ? $settings['color_messier'] : "#2266BB";
         $annotation_css = isset($settings['annotation_css']) ? $settings['annotation_css'] : "";
+        $color_grid = isset($settings['color_celestialCoordinateGrid']) ? $settings['color_celestialCoordinateGrid'] : "#CCCCCC";
 
         echo <<<SVG
 <?xml version="1.0" standalone="no"?>
@@ -59,6 +60,10 @@ class SvgAnnotation extends Annotation
                 rect.type-bright, line.type-bright, ellipse.type-bright { stroke: {$color_bright}; }
                 rect.type-hd, line.type-hd, ellipse.type-hd { stroke: {$color_hd}; }
                 rect.type-messier, line.type-messier, ellipse.type-messier { stroke: {$color_messier}; }
+
+                .grid polyline  { stroke: {$color_grid}; stroke-dasharray: 2,4;}
+                .grid ellipse { stroke-width:0; fill: {$color_grid}; }
+                .grid text { fill: {$color_grid}; }
 
                 {$annotation_css}
 

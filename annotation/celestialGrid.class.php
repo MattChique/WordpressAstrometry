@@ -96,14 +96,10 @@ class CelestialGrid
 
     public function Draw($imageRatio)
     {    
-        //Get color for grid
-        $settings = get_option('astrometry_settings');
-        $color_grid = isset($settings['color_celestialCoordinateGrid']) ? $settings['color_celestialCoordinateGrid'] : "#ccc";
-
         //Draw grid group
         echo <<<SVG
         
-        <g fill="none" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)" style="transform: translate(50%,50%)" >
+        <g class="grid" fill="none" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)" style="transform: translate(50%,50%)" >
 
 SVG;
 
@@ -123,7 +119,7 @@ SVG;
                 $coords .= $coord->x . "," .$coord->y . " ";
             }
 
-            echo '<polyline points="'.$coords.'" stroke-dasharray="2,2" style="fill:none;stroke:'.$color_grid.';stroke-width:1" />';
+            echo '<polyline points="'.$coords.'" />';
             echo "\n";
         }
         
@@ -140,7 +136,7 @@ SVG;
                 $coords .= $coord->x . "," .$coord->y . " ";
             }
 
-            echo '<polyline points="'.$coords.'" stroke-dasharray="2,2" style="fill:none;stroke:'.$color_grid.';stroke-width:1" />';
+            echo '<polyline points="'.$coords.'" />';
             echo "\n";
         }
 
@@ -153,14 +149,14 @@ SVG;
 
                 if($y == -1)
                 {
-                    echo '<ellipse cx="'.$coord->x.'" cy="'.$coord->y.'" rx="2" ry="2" style="stroke-width:0; fill:'.$color_grid.';" />';    
-                    echo '<text style="fill:'.$color_grid.'; transform:translate('.($coord->x+5).'px, '.($coord->y-5).'px)">'.Coord::DegToDms($coord->lat).'</text>';               
+                    echo '<ellipse cx="'.$coord->x.'" cy="'.$coord->y.'" rx="2" ry="2" />';    
+                    echo '<text style="transform:translate('.($coord->x+5).'px, '.($coord->y-5).'px)">'.Coord::DegToDms($coord->lat).'</text>';               
                 }
 
                 if($x == -1)
                 {
-                    echo '<ellipse cx="'.$coord->x.'" cy="'.$coord->y.'" rx="2" ry="2" style="stroke-width:0; fill:'.$color_grid.';" />';     
-                    echo '<text style="fill:'.$color_grid.'; transform:translate('.($coord->x+5).'px, '.($coord->y+13).'px)">'.Coord::DegToHms($coord->lon).'</text>';                             
+                    echo '<ellipse cx="'.$coord->x.'" cy="'.$coord->y.'" rx="2" ry="2" />';     
+                    echo '<text style="transform:translate('.($coord->x+5).'px, '.($coord->y+13).'px)">'.Coord::DegToHms($coord->lon).'</text>';                             
                 }
             }
         }
