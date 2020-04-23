@@ -39,6 +39,9 @@
       ],
       "A custom block for displaying an astrometry image": [
         "Ein Block, der ein Bild mit Astrometrisierung anzeigt"
+      ],
+      "Show HD Catalogue Stars": [
+        "Zeige HD Stern-Katalog"
       ]
     }
   }

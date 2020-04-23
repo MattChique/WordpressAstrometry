@@ -18,3 +18,78 @@ msgstr ""
 
 msgid "Objects"
 msgstr "Objekte"
+
+
+
+
+msgid "Astrometry Settings"
+msgstr "Astrometry Einstellungen"
+
+msgid "API-KEY"
+msgstr "API-KEY"
+
+msgid "Get an API Key"
+msgstr "Du benötigst einen API Key"
+
+msgid "Image Quality"
+msgstr "Bildqualität"
+
+msgid "Imagequality 1-100. Overrides the global Wordpress setting (82)."
+msgstr "Bildqualität 1-100. Überschreibt die globale Wordpress Einstellung (82)."
+
+msgid "Annotation"
+msgstr "Annotation"
+
+msgid "NGC catalogue color"
+msgstr "NGC Katalog Farbe"
+
+msgid "Color for NGC catalogue annotation"
+msgstr "Farbe für Objekte des NGC Katalogs"
+
+msgid "IC catalogue color"
+msgstr "IC Katalog Farbe"
+
+msgid "Color for IC catalogue annotation"
+msgstr "Farbe für Objekte des IC Katalogs"
+
+msgid "Bright stars color"
+msgstr "Bright Stars Farbe"
+
+msgid "Color for bright stars (named stars) annotation"
+msgstr "Farbe für helle Sterne (Sterne mit Namen)"
+
+msgid "HD catalogue color"
+msgstr "HD Katalog Farbe"
+
+msgid "Color for HD annotation"
+msgstr "Farbe für Objekte des HD Katalogs"
+
+msgid "Additional CSS"
+msgstr "Zusätzliches CSS"
+
+msgid "Additional CSS for SVG annotation styling"
+msgstr "Zusätzliches CSS für die SVG Annotation"
+
+msgid "Additional Catalogues"
+msgstr "Zusätzliche Kataloge"
+
+msgid "Objects of NGC, IC are shown as objects of additional cataglogues (Messier)"
+msgstr "Objekte des NGC, IC Katalogs werden als Objekte des Messier Katalogs dargestellt"
+
+msgid "Messier catalogue color"
+msgstr "Messier Katalog Farbe"
+
+msgid "Color for Messier annotation"
+msgstr "Farbe für Objekte des Messier Katalogs"
+
+msgid "Celestial coordinate grid"
+msgstr "Himmelskoordinaten Raster"
+
+msgid "Show celestial coordinate grid"
+msgstr "Zeige Himmelskoordinaten Raster"
+
+msgid "Celestial coordinate grid color"
+msgstr "Himmelskoordinaten Raster Farbe"
+
+msgid "Color for celestial coordinate grid"
+msgstr "Farbe für das Himmelskoordinaten Raster"

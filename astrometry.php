@@ -82,6 +82,9 @@ add_action('wp_ajax_astronomyImageAction', 'astronomyImageAction_callback');
 //Settings
 if ( is_admin() ) {
     $astrometry_settings = new AstrometrySettings();
+
+    //Localisation
+    load_plugin_textdomain( 'astrometry', false, dirname(plugin_basename(__FILE__)) . '/languages' );
 }
 function addSettingsAssets() {
     if ( is_admin() ) {
