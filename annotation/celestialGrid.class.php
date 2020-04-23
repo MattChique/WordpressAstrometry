@@ -84,9 +84,9 @@ class CelestialGrid
                     $yc = $yc + $centerOffset->y;
 
                 //Rotate
-                $angle = $this->cOrientation * M_PI / 180;
-                $coord->y = $yc*cos($angle) - $xc*sin($angle);
-                $coord->x = $yc*sin($angle) + $xc*cos($angle);
+                $angle = deg2rad($this->cOrientation);
+                $coord->y = -($xc*sin($angle) - $yc*cos($angle));
+                $coord->x = ($xc*cos($angle) +  $yc*sin($angle));
 
                 //Put in array
                 $this->gridArray[$x][$y] = $coord;
@@ -103,7 +103,7 @@ class CelestialGrid
         //Draw grid group
         echo <<<SVG
         
-        <g fill="none" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)" style="transform: translate(50%,50%) rotate({$rot}deg)" >
+        <g fill="none" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)" style="transform: translate(50%,50%)" >
 
 SVG;
 
@@ -160,7 +160,7 @@ SVG;
                 if($x == -1)
                 {
                     echo '<ellipse cx="'.$coord->x.'" cy="'.$coord->y.'" rx="2" ry="2" style="stroke-width:0; fill:'.$color_grid.';" />';     
-                    echo '<text style="fill:'.$color_grid.'; transform:translate('.($coord->x+5).'px, '.($coord->y+10).'px)">'.Coord::DegToHms($coord->lon).'</text>';                             
+                    echo '<text style="fill:'.$color_grid.'; transform:translate('.($coord->x+5).'px, '.($coord->y+13).'px)">'.Coord::DegToHms($coord->lon).'</text>';                             
                 }
             }
         }
