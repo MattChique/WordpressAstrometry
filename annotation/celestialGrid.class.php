@@ -83,9 +83,10 @@ class CelestialGrid
                 else
                     $yc = $yc + $centerOffset->y;
 
-                //Set x and y position
-                $coord->y = $yc;
-                $coord->x = $xc;
+                //Rotate
+                $angle = $this->cOrientation * M_PI / 180;
+                $coord->y = $yc*cos($angle) - $xc*sin($angle);
+                $coord->x = $yc*sin($angle) + $xc*cos($angle);
 
                 //Put in array
                 $this->gridArray[$x][$y] = $coord;
@@ -98,9 +99,6 @@ class CelestialGrid
         //Get color for grid
         $settings = get_option('astrometry_settings');
         $color_grid = isset($settings['color_celestialCoordinateGrid']) ? $settings['color_celestialCoordinateGrid'] : "#ccc";
-
-        //Rotation
-        $rot = $this->cOrientation * -1;
 
         //Draw grid group
         echo <<<SVG
@@ -151,13 +149,18 @@ SVG;
         {
             for($y = -$this->steps; $y < $this->steps; $y++)
             {
-                if($x == 0 || $y == 0 || true)
+                $coord = $this->gridArray[$y][$x];
+
+                if($y == -1)
                 {
-                    $coord = $this->gridArray[$y][$x];
-                
-                    echo '<text style="fill:'.$color_grid.'; transform:translate('.($coord->x-5).'px, '.($coord->y-20).'px) rotate(-90deg) ">'.$coord->lon.'</text>';
-                    echo "\n";                
-                    echo '<text style="fill:'.$color_grid.'; transform:translate('.($coord->x+20).'px, '.($coord->y-5).'px) rotate(0deg)">'.$coord->lat.'</text>';
+                    echo '<ellipse cx="'.$coord->x.'" cy="'.$coord->y.'" rx="2" ry="2" style="stroke-width:0; fill:'.$color_grid.';" />';    
+                    echo '<text style="fill:'.$color_grid.'; transform:translate('.($coord->x+5).'px, '.($coord->y-5).'px)">'.Coord::DegToDms($coord->lat).'</text>';               
+                }
+
+                if($x == -1)
+                {
+                    echo '<ellipse cx="'.$coord->x.'" cy="'.$coord->y.'" rx="2" ry="2" style="stroke-width:0; fill:'.$color_grid.';" />';     
+                    echo '<text style="fill:'.$color_grid.'; transform:translate('.($coord->x+5).'px, '.($coord->y+10).'px)">'.Coord::DegToHms($coord->lon).'</text>';                             
                 }
             }
         }
