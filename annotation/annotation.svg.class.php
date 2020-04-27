@@ -15,20 +15,21 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class SvgAnnotation extends Annotation
 {
-    private $mime = "image/svg+xml";
-
     public function SetGrid($grid)
     {
         $this->grid = $grid;
     }
-    private $grid = null;
+    private $grid = null;    
 
     public function Draw()
     {
-        header('Content-type: ' . $this->mime); 
+        // Return SVG Mime
+        header('Content-type:  "image/svg+xml"'); 
 
+        // Read font for embeding
         $base64Font = base64_encode(file_get_contents(realpath($this->fontPath)));
 
+        // Define Colors
         $settings = get_option('astrometry_settings');
         $color_ngc = isset($settings['color_ngc']) ? $settings['color_ngc'] : "#cc0000";
         $color_ic = isset($settings['color_ic']) ? $settings['color_ic'] : "#6699FF";
@@ -38,6 +39,7 @@ class SvgAnnotation extends Annotation
         $annotation_css = isset($settings['annotation_css']) ? $settings['annotation_css'] : "";
         $color_grid = isset($settings['color_celestialCoordinateGrid']) ? $settings['color_celestialCoordinateGrid'] : "#CCCCCC";
 
+        // Draw SVG head
         echo <<<SVG
 <?xml version="1.0" standalone="no"?>
         <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
@@ -81,10 +83,11 @@ class SvgAnnotation extends Annotation
         
 SVG;
 
-
+        // Draw celesial grid, if set
         if(isset($this->grid))
             $this->grid->Draw($this->displayRatio);
 
+        // Draw annotations for each  object
         foreach($this->annotations as $object)
         {	
             if($object["type"] == "hd" && !$this->showHD)
@@ -105,6 +108,7 @@ SVG;
 SVG;
     }
 
+    // Draw circle for an annotation object
     public function DrawCircle($object)
     {            
         $radius = $this->RV($this->getMinMaxRadius($object["radius"]));
@@ -116,6 +120,7 @@ SVG;
 SVG;
     }
 
+    // Draw text for an annotation object
     public function DrawText($object, $line = true, $boxed = true)
     {
         $x = $this->RV($object["pixelx"]);
@@ -123,28 +128,34 @@ SVG;
         $text = $this->GetNames($object["names"]);
         $objectRadius = $this->RV($this->getMinMaxRadius($object["radius"]));
 
+        // Calculate textsize
         $textBox = imagettfbbox($this->fontSize, 0, realpath($this->fontPath), $text);
         $textWidth = $textBox[2];
         $textHeight = $textBox[5]*-1 + $textBox[0];
 
         if($boxed == true) {
 
+            // Calculate box
             $boxX = $x - floor($textWidth / 2) - 1; //1 for border
             $boxY = $y - $objectRadius - $this->textOffsetToObject - $this->textBoxPadding*2 - $textHeight;
             $boxW = $textWidth;
             $boxH = $textHeight + $this->textBoxPadding*2 - 2; //2 for border
             $textY = $y - $boxY - $this->textBoxPadding - $textHeight + 2; //2 for border
             
+            // Draw text rectangle
             echo <<<SVG
 
             <rect width="{$boxW}" height="{$boxH}" x="{$boxX}.5" y="{$boxY}.5" class="type-{$object["type"]}" />
 SVG;
         }
+
+        // Draw text
         echo <<<SVG
 
             <text x="{$x}" y="{$y}" class="type-{$object["type"]}" text-anchor="middle" transform="translate(0 -{$textY})">{$text}</text>
 SVG;
 
+        // Draw connecting line between box and circle
         if($line == true) {
             $y1 = $y - $objectRadius;
             $y2 = $y - $this->textOffsetToObject - $objectRadius;
@@ -154,7 +165,5 @@ SVG;
 SVG;
         }
     }
-
-
 }
 ?>
