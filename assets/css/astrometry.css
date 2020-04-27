@@ -141,13 +141,14 @@
 
 
 .astrometry-image-data {
-	padding: 3rem;
+	padding: 2.5rem;
   background: rgba(0,0,0,0.4);
   border-bottom-right-radius: 5px;
   border-bottom-left-radius: 5px;
   margin: 0 0 1.5em;
   display: grid;
   grid-template-columns: 1fr 2fr;
+  grid-gap: 0.5rem;
 	align-items: center;	
 }
 .skyplot {
@@ -171,7 +172,7 @@
   display: grid;
   grid-template-columns: 2fr 1fr 1.5fr 2fr;
 	grid-auto-rows: min-content;
-  grid-gap: 0.6rem;
+  grid-gap: 0.5rem;
 }
 .astrometry-data a{
   font-weight: 300;
