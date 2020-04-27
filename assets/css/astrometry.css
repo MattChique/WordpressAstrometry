@@ -178,7 +178,8 @@
 }
 .astrometry-data > * {
   margin:0;
-  grid-column: 2 / span 3;
+  white-space: nowrap;
+  grid-column: 2 / span 3;  
 }
 .astrometry-data > .col2 {
   grid-column: 2;
@@ -201,6 +202,9 @@
 }
 .astrometry-data .info {
   color: #AAA;
+}
+.astrometry-data .objects {
+  white-space: normal;
 }
 .astrometry-data abbr {
   text-decoration: none;
