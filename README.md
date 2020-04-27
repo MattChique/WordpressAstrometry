@@ -3,13 +3,19 @@ Welcome to my first Wordpress Plugin. It is an Plugin, that provides a Gutenberg
 
 # What it does
 - Solving astronomic images via [astrometry.NET](http://nova.astrometry.net)
-- Colored SVG annotations by different catalogues (HD, Bright, NGC, IC, the ones, which are delivered by astrometry.NET)
+- Colored annotations by different catalogues (HD, Bright, NGC, IC, the ones, which are delivered by astrometry.NET)
+- Globally turn on Messier Objects to override NGC
+- Global settings administration page: Decide wether to show the celestial grid or not. Choose colors of catalogues and grid
+- All annotations are stylable via custom CSS as they are SVG objects
 - Image zoom / monochrome-invert switch
+- Zoomable skyplot
 - Astrometry data output (RA,Dec,Field) and photografic details output (frames, exposuretime, date, equipment) below image
 - Extended wordpress search (Tags like M101 are stored in customfields)
+- Default localisation is english, a german localisation is also included
 
 # How it looks
-![look](https://github.com/RedburnM/WordpressAstrometry/raw/master/assets/example.png)
+![look](https://github.com/RedburnM/WordpressAstrometry/raw/master/assets/example1.png)
+![look](https://github.com/RedburnM/WordpressAstrometry/raw/master/assets/example2.png)
 
 Or checkout [my demo](https://www.explorespace.de/2020/m45/)
 
