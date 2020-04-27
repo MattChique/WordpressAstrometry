@@ -58,6 +58,12 @@ class AstrometrySettings {
 					//Load color picker
 					jQuery('.color-picker').iris({
 						defaultColor: true,
+						mode: 'hsl',
+    controls: {
+        horiz: 's', // horizontal defaults to saturation
+        vert: 'l', // vertical defaults to lightness
+        strip: 'h' // right strip defaults to hue
+    },
 						change: function(event, ui){},
 						clear: function() {},
 						hide: true,
