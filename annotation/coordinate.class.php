@@ -27,10 +27,23 @@ class Coord
         $this->lon = $lon;
     }
 
+    // Draws a coordinate as a dot on coords position, opional with text
     public function Draw($text = "")
     {
-        echo '<ellipse cx="'.$this->x.'" cy="'.$this->y.'" rx="2" ry="2" />';     
-        echo '<text style="transform:translate('.($this->x+5).'px, '.($this->y+13).'px)">'.$text.'</text>';    
+        echo '<ellipse cx="'.$this->X().'" cy="'.$this->Y().'" rx="2" ry="2" />';     
+        echo '<text style="transform:translate('.($this->X()+5).'px, '.($this->Y()+13).'px)">'.$text.'</text>';    
+    }
+
+    // Return rouned X for SVG position, we don't need decimal places
+    public function X()
+    {
+        return round($this->x,0);
+    }
+
+    // Return rouned Y for SVG position, we don't need decimal places
+    public function Y()
+    {
+        return round($this->y,0);
     }
 
     // Converts decimal format to DMS ( Degrees / minutes / seconds ) 

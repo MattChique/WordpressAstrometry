@@ -167,7 +167,7 @@ SVG;
                 $coord = $this->gridArray[$x][$y];
 
                 //Set polyline position
-                $coords .= $coord->x . "," .$coord->y . " ";
+                $coords .= $coord->X() . "," .$coord->Y() . " ";
             }
 
             //Print coords as polyline
@@ -191,7 +191,7 @@ SVG;
                 $coord = $this->gridArray[$y][$x];
 
                 //Set polyline position
-                $coords .= $coord->x . "," .$coord->y . " ";
+                $coords .= $coord->X() . "," .$coord->Y() . " ";
             }
 
             //Print coords as polyline
@@ -214,14 +214,14 @@ SVG;
 
                 if($y == -1 || ($this->isPole && $y == 0))
                 {
-                    echo '<ellipse cx="'.$coord->x.'" cy="'.$coord->y.'" rx="2" ry="2" />';    
-                    echo '<text style="transform:translate('.($coord->x+5).'px, '.($coord->y-5).'px)">'.Coord::DegToDms($coord->lat).'</text>';               
+                    echo '<ellipse cx="'.$coord->X().'" cy="'.$coord->Y().'" rx="2" ry="2" />';    
+                    echo '<text style="transform:translate('.($coord->X()+5).'px, '.($coord->Y()-5).'px)">'.Coord::DegToDms($coord->lat).'</text>';               
                 }
 
                 if($x == -1 || ($this->isPole && ($x == 3 && $y != 0)))
                 {
-                    echo '<ellipse cx="'.$coord->x.'" cy="'.$coord->y.'" rx="2" ry="2" />';     
-                    echo '<text style="transform:translate('.($coord->x+5).'px, '.($coord->y+13).'px)">'.Coord::DegToHms($coord->lon).'</text>';                             
+                    echo '<ellipse cx="'.$coord->X().'" cy="'.$coord->Y().'" rx="2" ry="2" />';     
+                    echo '<text style="transform:translate('.($coord->X()+5).'px, '.($coord->Y()+13).'px)">'.Coord::DegToHms($coord->lon).'</text>';                             
                 }
             }
         }
