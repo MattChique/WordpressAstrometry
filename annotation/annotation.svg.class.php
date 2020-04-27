@@ -24,7 +24,7 @@ class SvgAnnotation extends Annotation
     public function Draw()
     {
         // Return SVG Mime
-        header('Content-type:  "image/svg+xml"'); 
+        header('Content-type: image/svg+xml'); 
 
         // Read font for embeding
         $base64Font = base64_encode(file_get_contents(realpath($this->fontPath)));
