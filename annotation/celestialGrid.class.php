@@ -23,6 +23,7 @@ class CelestialGrid
     private $cRadius;
     private $cRadiusPx;
 
+    private $isPole;
     private $steps;
     private $scale;
 
@@ -40,6 +41,50 @@ class CelestialGrid
         //Calculate scale and steps
         $this->scale = $this->GetScale();
         $this->steps = $this->GetSteps();   
+        $this->isPole = $this->IsPole();
+    }
+
+    public function CalculateGridPole($imageRatio)
+    {    
+        $cLat = $this->cCenterDec;
+        $cLon = $this->cCenterRa;
+
+        //Coord of real center
+        $center = new Coord($cLat,$cLon);
+
+        //Nearest coord on scale
+        $centerOffset = new Coord(90,0);
+        $centerOffset->x = $this->GetDistance($center, new Coord($cLat,0)) * $imageRatio;
+        $centerOffset->y = -$this->GetDistance($center, new Coord(90,$cLon)) * $imageRatio;
+
+        //Draw pole
+        $centerOffset->Draw("Pole");
+
+        //Calculate coords in grid for x and y axes
+        for($x = 0; $x < 37; $x++)
+        {
+            for($y = 1; $y < $this->steps; $y++) //y=1 for not drawing lines to Pole 
+            {
+                //New coord in grid
+                $coord = new Coord($centerOffset->lat - ($y*$this->scale), $centerOffset->lon + ($x*$this->scale*10));
+
+                //Calculate distance to offset coords
+                $xOffsetCoord = new Coord($centerOffset->lat, $coord->lon);                
+                $xc = $this->GetDistance($coord, $xOffsetCoord) * $imageRatio;
+                $yc = 0;
+
+                //Rotate Orientation and RA
+                $angle = deg2rad( ($this->cOrientation - $this->cCenterRa - $x*10)  ) ; 
+                $coord->y = -($xc*sin($angle) - $yc*cos($angle)) + $centerOffset->y;
+                $coord->x = ($xc*cos($angle) +  $yc*sin($angle)) + $centerOffset->x;
+
+                //Put in array
+                $this->gridArray[$x][$y] = $coord;
+            }
+        }   
+
+        //Update Steps for printing all coords
+        $this->steps = 36 * $this->steps;
     }
 
     public function CalculateGrid($imageRatio)
@@ -58,9 +103,9 @@ class CelestialGrid
         $centerOffset->y = $this->GetDistance($center, new Coord($this->RoundC($cLat),$cLon)) * $imageRatio;
 
         //Calculate coords in grid for x and y axes
-        for($x = -$this->steps; $x < $this->steps; $x++)
+        for($x = -$this->steps; $x <= $this->steps; $x++)
         {
-            for($y = -$this->steps; $y < $this->steps; $y++)
+            for($y = -$this->steps; $y <= $this->steps; $y++)
             {
                 //New coord in grid
                 $coord = new Coord($centerOffset->lat - ($y*$this->scale), $centerOffset->lon - ($x*$this->scale));
@@ -104,14 +149,20 @@ class CelestialGrid
 SVG;
 
         //Calculate Grid Array
-        $this->CalculateGrid($imageRatio);
+        if($this->isPole)
+            $this->CalculateGridPole($imageRatio);
+        else
+            $this->CalculateGrid($imageRatio);
 
         //Draw lines for Dec
-        for($x = -$this->steps; $x < $this->steps; $x++)
+        for($x = -$this->steps; $x <= $this->steps; $x++)
         {
             $coords = "";
-            for($y = -$this->steps; $y < $this->steps; $y++)
+            for($y = -$this->steps; $y <= $this->steps; $y++)
             {
+                if(!isset($this->gridArray[$x][$y]))
+                    continue;
+
                 //Get coord
                 $coord = $this->gridArray[$x][$y];
 
@@ -119,16 +170,23 @@ SVG;
                 $coords .= $coord->x . "," .$coord->y . " ";
             }
 
-            echo '<polyline points="'.$coords.'" />';
-            echo "\n";
+            //Print coords as polyline
+            if($coords != "") 
+            {
+                echo '<polyline points="'.$coords.'" />';
+                echo "\n";
+            }
         }
         
         //Draw lines for Ra
-        for($x = -$this->steps; $x < $this->steps; $x++)
+        for($x = -$this->steps; $x <= $this->steps; $x++)
         {
             $coords = "";
-            for($y = -$this->steps; $y < $this->steps; $y++)
+            for($y = -$this->steps; $y <= $this->steps; $y++)
             {
+                if(!isset($this->gridArray[$y][$x]))
+                    continue;
+
                 //Get coord
                 $coord = $this->gridArray[$y][$x];
 
@@ -136,24 +194,31 @@ SVG;
                 $coords .= $coord->x . "," .$coord->y . " ";
             }
 
-            echo '<polyline points="'.$coords.'" />';
-            echo "\n";
+            //Print coords as polyline
+            if($coords != "") 
+            {
+                echo '<polyline points="'.$coords.'" />';
+                echo "\n";
+            }
         }
 
         //Draw Text
-        for($x = -$this->steps; $x < $this->steps; $x++)
+        for($x = -$this->steps; $x <= $this->steps; $x++)
         {
-            for($y = -$this->steps; $y < $this->steps; $y++)
+            for($y = -$this->steps; $y <= $this->steps; $y++)
             {
+                if(!isset($this->gridArray[$y][$x]))
+                    continue;
+
                 $coord = $this->gridArray[$y][$x];
 
-                if($y == -1)
+                if($y == -1 || ($this->isPole && $y == 0))
                 {
                     echo '<ellipse cx="'.$coord->x.'" cy="'.$coord->y.'" rx="2" ry="2" />';    
                     echo '<text style="transform:translate('.($coord->x+5).'px, '.($coord->y-5).'px)">'.Coord::DegToDms($coord->lat).'</text>';               
                 }
 
-                if($x == -1)
+                if($x == -1 || ($this->isPole && ($x == 3 && $y != 0)))
                 {
                     echo '<ellipse cx="'.$coord->x.'" cy="'.$coord->y.'" rx="2" ry="2" />';     
                     echo '<text style="transform:translate('.($coord->x+5).'px, '.($coord->y+13).'px)">'.Coord::DegToHms($coord->lon).'</text>';                             
@@ -208,6 +273,14 @@ SVG;
         }
 
         return round($coord,1);
+    }
+
+    public function IsPole()
+    {
+        if($this->cCenterDec + $this->cRadius > 90)
+            return true;
+
+        return false;
     }
 
     //Vincenty Formula
