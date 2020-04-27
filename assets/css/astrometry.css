@@ -70,30 +70,42 @@
 	position:absolute;
 	bottom:5px;
 	right:5px;  
-	line-height:normal;
-	pointer-events:none;
-}
-.astrometryActions .toggleAnnotations:before {
-  content:'\f05b';
-}
-.astrometryActions .toggleMonochrome:before {
-  content:'\f279';
-}
-.astrometryActions .openFull:before {
-  content:'\f35d';
 }
 .astrometryActions .astrometryAction {
-  padding:5px;
+  margin:5px;
   cursor:pointer;
-	pointer-events:all;
+  pointer-events:all;
+  height: 24px;
+  width: 24px;
+  display: inline-block;
 }
-.astrometryActions .astrometryAction:before {
-  font-family: FontAwesome;
-  color:#bbbbbb;  
+.astrometryActions .toggleMonochrome.active:hover,
+.astrometryActions .toggleMonochrome {
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' height='24' width='24' fill='white'><path d='m31.5,0c-17.41003,0 -31.5,14.0885 -31.5,31.5c0,17.41003 14.0885,31.5 31.5,31.5c17.41003,0 31.5,-14.0885 31.5,-31.5c0,-17.41003 -14.0885,-31.5 -31.5,-31.5zm1.8457,59.24867l0,-55.49734c14.30543,0.93073 25.96289,12.81299 25.96289,27.74867c0,14.93162 -11.65069,26.81745 -25.96289,27.74867z'/></svg>");
 }
-.astrometryActions .astrometryAction:hover:before, .astrometryActions .astrometryAction.active:before {
-  color:#900;
+.astrometryActions .toggleMonochrome:hover, 
+.astrometryActions .toggleMonochrome.active {
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' height='24' width='24' fill='%23990000'><path d='m31.5,0c-17.41003,0 -31.5,14.0885 -31.5,31.5c0,17.41003 14.0885,31.5 31.5,31.5c17.41003,0 31.5,-14.0885 31.5,-31.5c0,-17.41003 -14.0885,-31.5 -31.5,-31.5zm1.8457,59.24867l0,-55.49734c14.30543,0.93073 25.96289,12.81299 25.96289,27.74867c0,14.93162 -11.65069,26.81745 -25.96289,27.74867z'/></svg>");
 }
+.astrometryActions .toggleAnnotations.active:hover, 
+.astrometryActions .toggleAnnotations {
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' height='24' width='24' fill='none' stroke='white' stroke-width='2'><rect stroke-width='8' x='0' y='0' width='64' height='64' /><line y2='40' x2='64' y1='55' x1='1' /><line y2='20' x2='64' y1='35' x1='0' /><line y2='0' x2='64' y1='15' x1='0' /><line y2='62' x2='21' y1='0' x1='5' /><line y2='63' x2='53' y1='0' x1='37' /><circle r='12' cy='23' cx='44' /><circle r='9' cy='42' cx='16' /></svg>");
+}
+.astrometryActions .toggleAnnotations:hover, 
+.astrometryActions .toggleAnnotations.active {
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' height='24' width='24' fill='none' stroke='%23990000' stroke-width='2'><rect stroke-width='8' x='0' y='0' width='64' height='64' /><line y2='40' x2='64' y1='55' x1='1' /><line y2='20' x2='64' y1='35' x1='0' /><line y2='0' x2='64' y1='15' x1='0' /><line y2='62' x2='21' y1='0' x1='5' /><line y2='63' x2='53' y1='0' x1='37' /><circle r='12' cy='23' cx='44' /><circle r='9' cy='42' cx='16' /></svg>");
+}
+.astrometryActions .openFull.active:hover, 
+.astrometryActions .openFull {
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' height='24' width='24' fill='none' stroke='white' stroke-width='8'><rect height='64' width='64' /><line x1='0' y1='64' x2='43' y2='20' /><path d='m16,18c0,0 30,0 30,0c0,0 0,30 0,30'/></svg>");
+}
+.astrometryActions .openFull:hover, 
+.astrometryActions .openFull.active {
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' height='24' width='24' fill='none' stroke='%23990000' stroke-width='8'><rect height='64' width='64' /><line x1='0' y1='64' x2='43' y2='20' /><path d='m16,18c0,0 30,0 30,0c0,0 0,30 0,30'/></svg>");
+}
+
+
+
 
 
 .solving {
