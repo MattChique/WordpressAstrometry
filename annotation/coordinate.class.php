@@ -27,6 +27,12 @@ class Coord
         $this->lon = $lon;
     }
 
+    public function Draw($text = "")
+    {
+        echo '<ellipse cx="'.$this->x.'" cy="'.$this->y.'" rx="2" ry="2" />';     
+        echo '<text style="transform:translate('.($this->x+5).'px, '.($this->y+13).'px)">'.$text.'</text>';    
+    }
+
     // Converts decimal format to DMS ( Degrees / minutes / seconds ) 
     public static function DegToDms($dec)
     {        

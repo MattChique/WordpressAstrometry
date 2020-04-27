@@ -42,6 +42,77 @@ class CelestialGrid
         $this->steps = $this->GetSteps();   
     }
 
+    public function CalculateGridPole($imageRatio)
+    {    
+        $cLat = $this->cCenterDec;
+        $cLon = $this->cCenterRa;
+        $this->scale = 10;
+        $this->steps = 18;
+
+        //Coord of real center
+        $center = new Coord($cLat,$cLon);
+        $center->x = "0px";
+        $center->y = "0px";
+
+        //Nearest coord on scale
+        $centerOffset = new Coord(90,0);
+        $centerOffset->x = $this->GetDistance($center, new Coord($cLat,0)) * $imageRatio;
+        $centerOffset->y = -$this->GetDistance($center, new Coord(90,$cLon)) * $imageRatio;
+
+        $centerOffset->Draw("pole");
+
+print_r($centerOffset);
+
+        //Calculate coords in grid for x and y axes
+        for($x = -$this->steps; $x < $this->steps; $x++)
+        {
+            for($y = -$this->steps; $y < $this->steps; $y++)
+            {
+                //New coord in grid
+                $lat = 90 - ($y*$this->scale/10);
+                $lon = ($x*$this->scale);
+
+                
+
+                $coord = new Coord($lat, $lon);
+
+                $yOffsetCoord = new Coord($centerOffset->lat, $coord->lon);
+                $xOffsetCoord = new Coord($coord->lat, $centerOffset->lon);
+
+                //Calculate distance to offset coords
+                $xc = $this->GetDistance($coord, $xOffsetCoord) * $imageRatio;
+                $yc = $this->GetDistance($coord, $yOffsetCoord) * $imageRatio;
+
+                if($x < 0) 
+                    $xc = ($xc )*-1 + $centerOffset->x;
+                else
+                    $xc = $xc + $centerOffset->x;
+
+                if($y < 0) 
+                    $yc = ($yc)*-1 + $centerOffset->y;
+                else
+                    $yc = $yc + $centerOffset->y;
+
+                //Rotate
+                //$angle = deg2rad($this->cOrientation);
+                //$coord->y = -($xc*sin($angle) - $yc*cos($angle));
+                //$coord->x = ($xc*cos($angle) +  $yc*sin($angle));
+
+                if($lon == 0)
+                {
+                    $yc = $centerOffset->y;
+                    $xc = $centerOffset->x;
+                }
+                $coord->y = $yc;
+                $coord->x = $xc;
+
+                //Put in array
+                $this->gridArray[$x][$y] = $coord;
+            }
+        }   
+        print_r($this->gridArray);
+    }
+
     public function CalculateGrid($imageRatio)
     {    
         $cLat = $this->cCenterDec;
@@ -103,8 +174,18 @@ class CelestialGrid
 
 SVG;
 
+        if($this->cCenterDec + $this->cRadius > 90)
+        {
+            $this->CalculateGridPole($imageRatio);
+        }
+        else
+        {
+            $this->CalculateGrid($imageRatio);
+        }
+
+
         //Calculate Grid Array
-        $this->CalculateGrid($imageRatio);
+        //$this->CalculateGrid($imageRatio);
 
         //Draw lines for Dec
         for($x = -$this->steps; $x < $this->steps; $x++)
