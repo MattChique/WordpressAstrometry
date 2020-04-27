@@ -76,12 +76,7 @@ class AlternateCatalogues
             "NGC 206"  => "M 31",
             "NGC 221"  => "M 32",
             "NGC 224"  => "M 31",
-            "NGC 588"  => "M 33", //Check
-            "NGC 592"  => "M 33", //Check
-            "NGC 595"  => "M 33", //Check
-            "NGC 598"  => "M 33", //Check
-            "NGC 603"  => "M 33", //Check
-            "NGC 604"  => "M 33", //Check
+            "NGC 598"  => "M 33",
             "NGC 1039" => "M 34",
             "NGC 2168" => "M 35",
             "NGC 1960" => "M 36",
@@ -92,10 +87,8 @@ class AlternateCatalogues
             "NGC 1976" => "M 42",
             "NGC 1982" => "M 43",
             "NGC 2632" => "M 44",
-            "NGC 1432" => "M 45", //Check
-            "NGC 1435" => "M 45", //Check
-            "NGC 2437" => "M 46", //Check
-            "NGC 2438" => "M 46", //Check
+            "NGC 1432" => "M 45",
+            "NGC 2437" => "M 46",
             "NGC 2422" => "M 47",
             "NGC 2478" => "M 48",
             "NGC 4472" => "M 49",
@@ -125,8 +118,7 @@ class AlternateCatalogues
             "NGC 6994" => "M 73",
             "NGC 628"  => "M 74",
             "NGC 6864" => "M 75",
-            "NGC 650"  => "M 76", //Check
-            "NGC 651"  => "M 76", //Check
+            "NGC 650"  => "M 76",
             "NGC 1068" => "M 77",
             "NGC 2068" => "M 78",
             "NGC 1904" => "M 79",
@@ -141,8 +133,7 @@ class AlternateCatalogues
             "NGC 4501" => "M 88",            
             "NGC 4552" => "M 89",
             "NGC 4569" => "M 90",
-            "NGC 4548" => "M 91", //Check
-            "NGC 4571" => "M 91", //Check   
+            "NGC 4548" => "M 91",
             "NGC 6341" => "M 92",
             "NGC 2447" => "M 93",
             "NGC 4736" => "M 94",
@@ -160,8 +151,7 @@ class AlternateCatalogues
             "NGC 4258" => "M 106",
             "NGC 6171" => "M 107",
             "NGC 3556" => "M 108",
-            "NGC 3953" => "M 109", //Check
-            "NGC 3992" => "M 109", //Check
+            "NGC 3992" => "M 109",
             "NGC 205"  => "M 110"
         );
     }
