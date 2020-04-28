@@ -177,7 +177,7 @@
 .astrometry-data a{
   font-weight: 300;
 }
-.astrometry-data > p > span {
+.astrometry-data .unit {
   color: #666!important;
 }
 .astrometry-data > * {
