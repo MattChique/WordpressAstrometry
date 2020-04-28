@@ -71,13 +71,20 @@
         }
 		
         var formatExposureTime = function(seconds) {
-          var minutes = Math.floor(seconds / 60);
-          var hours =  Math.floor(minutes / 60);
+          var hours =  Math.floor(seconds / 60 / 60);
+          var minutes = Math.floor(seconds / 60) - hours * 60;      
+          var seconds = seconds - minutes * 60;    
           if(hours > 0) {
-            return hours + "." + Math.floor(60/minutes) + "h";
+            if(minutes > 0)
+              return hours + "h " + minutes + "min";
+            else
+              return hours + "h";
           }
           if(minutes > 0) {
-            return minutes + "." + Math.floor(60/seconds) + "min";
+            if(seconds > 0)
+              return minutes + "min " + seconds + "s";
+            else
+              return minutes + "min";
           }
         }
   
@@ -227,13 +234,20 @@
         var imageClass = 'wp-image-' + props.attributes.mediaID
 
         var formatExposureTime = function(seconds) {
-          var minutes = Math.floor(seconds / 60);
-          var hours =  Math.floor(minutes / 60);
+          var hours =  Math.floor(seconds / 60 / 60);
+          var minutes = Math.floor(seconds / 60) - hours * 60;      
+          var seconds = seconds - minutes * 60;    
           if(hours > 0) {
-            return hours + "." + Math.floor(60/minutes) + "h";
+            if(minutes > 0)
+              return hours + "h " + minutes + "min";
+            else
+              return hours + "h";
           }
           if(minutes > 0) {
-            return minutes + "." + Math.floor(60/seconds) + "min";
+            if(seconds > 0)
+              return minutes + "min " + seconds + "s";
+            else
+              return minutes + "min";
           }
         }
 
