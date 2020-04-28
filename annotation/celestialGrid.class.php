@@ -17,16 +17,19 @@ require_once("coordinate.class.php");
 
 class CelestialGrid 
 {
+    // Calibration data
     private $cOrientation;
     private $cCenterRa;
     private $cCenterDec;
     private $cRadius;
     private $cRadiusPx;
 
+    // Drawing variables
     private $isPole;
     private $steps;
     private $scale;
 
+    // Array of grid coords
     private $gridArray;
 
     public function __construct($c)
@@ -44,7 +47,8 @@ class CelestialGrid
         $this->isPole = $this->IsPole();
     }
 
-    public function CalculateGridPole($imageRatio)
+    // Calculate coordinate array for pole region
+    private function CalculateGridPole($imageRatio)
     {    
         $cLat = $this->cCenterDec;
         $cLon = $this->cCenterRa;
@@ -87,7 +91,8 @@ class CelestialGrid
         $this->steps = 36 * $this->steps;
     }
 
-    public function CalculateGrid($imageRatio)
+    // Calculate coordinate array
+    private function CalculateGrid($imageRatio)
     {    
         $cLat = $this->cCenterDec;
         $cLon = $this->cCenterRa;
@@ -139,14 +144,11 @@ class CelestialGrid
         }
     }
 
+    // Draw SVG Grid
     public function Draw($imageRatio)
     {    
         //Draw grid group
-        echo <<<SVG
-        
-        <g class="grid" fill="none" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)" style="transform: translate(50%,50%)" >
-
-SVG;
+        echo '<g class="grid" fill="none" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)" style="transform: translate(50%,50%)" >';
 
         //Calculate Grid Array
         if($this->isPole)
@@ -227,14 +229,11 @@ SVG;
         }
 
         //Draw grid group end
-        echo <<<SVG
-
-        </g>
-SVG;
+        echo '</g>';
     }
 
     //Calculate how many steps it needs to fill out the complete image area
-    public function GetSteps()
+    private function GetSteps()
     {
         $steps = floor(($this->cRadius*2) / $this->scale) + 2 ;
 
@@ -242,7 +241,7 @@ SVG;
     }
 
     //Calculate the scale to show for a minimum required lines; return distances in deg.
-    public function GetScale($minLine = 3)
+    private function GetScale($minLine = 3)
     {
         $pWidth = $this->cRadius * 2;
 
@@ -260,7 +259,7 @@ SVG;
     }
 
     //Rounds a number scale-dependent
-    public function RoundC($coord)
+    private function RoundC($coord)
     {
         if($this->scale >= 0.5)
         {
@@ -275,7 +274,8 @@ SVG;
         return round($coord,1);
     }
 
-    public function IsPole()
+    // Returns true, if pole region
+    private function IsPole()
     {
         if($this->cCenterDec + $this->cRadius > 90)
             return true;
@@ -284,7 +284,7 @@ SVG;
     }
 
     //Vincenty Formula
-    public function GetDistance($coord1, $coord2)
+    private function GetDistance($coord1, $coord2)
     {
         // convert from degrees to radians
         $latFrom = deg2rad($coord1->lat);
