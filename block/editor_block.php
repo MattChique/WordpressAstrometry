@@ -76,7 +76,7 @@ function astrometry_render($attributes, $content) {
         $add .= '<label>' . __('RA', 'astrometry') . '</label><p class="col2"><abbr title="'.$info["calibration"]["ra"].'">' . Coord::DegToHms($info["calibration"]["ra"]) . '</abbr></p>';
         $add .= '<label class="col3">' . __('DEC', 'astrometry') . '</label><p class="col4"><abbr title="'.$info["calibration"]["dec"].'">' . Coord::DegToDms($info["calibration"]["dec"]) . '</abbr></p>';
         $add .= '<label>' . __('Fieldradius', 'astrometry') . '</label><p class="col2">' . Coord::DegToDms($info["calibration"]["radius"]) . '</p>';
-        $add .= '<label class="col3">' . __('Pixelscale', 'astrometry') . '</label><p class="col4">' . round($info["calibration"]["pixscale"],4) . '</p>';
+        $add .= '<label class="col3">' . __('Pixelscale', 'astrometry') . '</label><p class="col4">' . round($info["calibration"]["pixscale"],4) . ' <span>px/arcsec</span></p>';
         $add .= '<label>' . __('Job', 'astrometry') . '</label><p><a href="http://nova.astrometry.net/status/'.$data->Get("subid").'" target="_blank">'.$data->Get("subid").'</a></p>';
         $add .= '<label>' . __('Objects', 'astrometry') . '</label><p class="objects">' . join($tags,", ") . '</p>';
 

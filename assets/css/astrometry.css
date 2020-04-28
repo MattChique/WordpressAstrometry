@@ -177,6 +177,9 @@
 .astrometry-data a{
   font-weight: 300;
 }
+.astrometry-data > p > span {
+  color: #666!important;
+}
 .astrometry-data > * {
   margin:0;
   white-space: nowrap;
