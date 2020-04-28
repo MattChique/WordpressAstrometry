@@ -5,7 +5,7 @@ Description: Bietet einen Gutenberg-Block an, der Bilder anhand der astrometry.n
 Plugin URI: https://www.explorespace.de/
 Text Domain: astrometry
 Domain Path: languages
-Version: 0.7
+Version: 0.8.0
 Author: Matthias Guttmann
 Author URI: https://www.explorespace.de/
 */
