@@ -57,6 +57,9 @@ class AstrometryData
 
     public function Solve($apiKey) 
 	{
+		$astrometryNetApi = "http://nova.astrometry.net/api/";
+		$astrometryNetPublicly = "n";
+
 		if($apiKey == "")
 			return "No API Key!";
 
@@ -64,50 +67,50 @@ class AstrometryData
 		{
 			if($this->Get("subid") != null)
 			{
-				$resultJsonSubmission = json_decode(file_get_contents("http://nova.astrometry.net/api/submissions/".$this->Get("subid")));
+				$resultJsonSubmission = json_decode(file_get_contents($astrometryNetApi."submissions/".$this->Get("subid")));
 
 				if($resultJsonSubmission->jobs[0] != "")
 				{	
                     $this->Add("submission", $resultJsonSubmission);
 
-					$resultJsonJob = json_decode(file_get_contents("http://nova.astrometry.net/api/jobs/".$resultJsonSubmission->jobs[0]));
+					$resultJsonJob = json_decode(file_get_contents($astrometryNetApi."jobs/".$resultJsonSubmission->jobs[0]));
 					if($resultJsonJob->status == "failure")
 					{
 						$this->Remove("submission");
 						$this->Remove("subid");
 
-						return "Bild wurde nicht astrometrisiert. Fehlschlag.";
+						return __("Could not solve image", "astrometry");
 					}
 					if($resultJsonJob->status == "solving")
 					{
-						return "Bild wird gerade astrometrisiert. Job: " . $resultJsonSubmission->jobs[0] . " -> " . $resultJsonJob->status;
+						return printf(__('Solving image. Job: %1$s -> %2$s', "astrometry"), $resultJsonSubmission->jobs[0], $resultJsonJob->status);
 					}
 					if($resultJsonJob->status == "success")
 					{			
-						$resultJsonJobInfo = json_decode(file_get_contents("http://nova.astrometry.net/api/jobs/".$resultJsonSubmission->jobs[0]."/info/"));
-						$resultJsonAnnotations = json_decode(file_get_contents("http://nova.astrometry.net/api/jobs/".$resultJsonSubmission->jobs[0]."/annotations/"));
+						$resultJsonJobInfo = json_decode(file_get_contents($astrometryNetApi."jobs/".$resultJsonSubmission->jobs[0]."/info/"));
+						$resultJsonAnnotations = json_decode(file_get_contents($astrometryNetApi."jobs/".$resultJsonSubmission->jobs[0]."/annotations/"));
 
 						$this->Add("info", $resultJsonJobInfo);
 						$this->Add("annotations", $resultJsonAnnotations);
 
-						return "Bild wurde erfolgreich astrometrisiert.";
+						return __("Image successfully solved!", "astrometry");
 					}
 
-					return "Bild wird astrometrisiert: " . $resultJsonJob->status . " Submission: " . $this->Get("subid");
+					return printf(__('Solving image: %1$s Submission: %2$s', "astrometry"), $resultJsonJob->status, $this->Get("subid"));
                 }
-                
-				return "Bild wird astrometrisiert. Submission: " . $this->Get("subid");
+				
+				return printf(__('Solving image. Submission: %1$s', "astrometry"), $this->Get("subid"));
 			}
 			else
 			{
-                $loginResponse = json_decode($this->Curl("http://nova.astrometry.net/api/login",'request-json={"apikey": "'.$apiKey.'"}'), false);
-                $url =  wp_get_attachment_image_src($this->mediaId, 'original')[0];
-				$content = 'request-json={"session": "'. $loginResponse->session.'", "url": "'.$url.'", "allow_commercial_use": "n", "publicly_visible" : "n"}';
-				$jobResponse = json_decode($this->Curl("http://nova.astrometry.net/api/url_upload",$content),false);
-                
+                $loginResponse = json_decode($this->Curl($astrometryNetApi."login",'request-json={"apikey": "'.$apiKey.'"}'), false);
+                $imageUrl =  wp_get_attachment_image_src($this->mediaId, 'original')[0];
+				$content = 'request-json={"session": "'. $loginResponse->session.'", "url": "'.$imageUrl.'", "allow_commercial_use": "n", "publicly_visible" : "'.$astrometryNetPublicly.'"}';
+				$jobResponse = json_decode($this->Curl($astrometryNetApi."url_upload",$content),false);
+				
 				$this->Add("subid", $jobResponse->subid);
-                
-				return "Bild wird angemeldet zum Astrometrisieren: "  . $jobResponse->subid;
+				
+				return printf(__('Image solving startet: %1$s', "astrometry"), $jobResponse->subid);
 			}
 		}
 	}
@@ -119,7 +122,12 @@ class AstrometryData
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curl, CURLOPT_POST, true);
 		curl_setopt($curl, CURLOPT_POSTFIELDS, $content);
-		return curl_exec($curl);
+
+		$result = curl_exec($curl);
+
+		curl_close($curl);
+
+		return $result;
 	} 
 }
 ?>

@@ -21,6 +21,25 @@ msgstr "Objekte"
 
 
 
+msgid "Could not solve image"
+msgstr "Bild wurde nicht astrometrisiert. Fehlschlag"
+
+msgid "Image solving startet: %1$s"
+msgstr "Bild wird angemeldet zum Astrometrisieren: %1$s"
+
+msgid "Solving image. Job: %1$s -> %2$s"
+msgstr "Bild wird astrometrisiert. Job: %1$s -> %2$s"
+
+msgid "Solving image: %1$s Submission: %2$s"
+msgstr "Bild wird astrometrisiert: %1$s Submission: %2$s"
+
+msgid "Solving image. Submission: %1$s"
+msgstr "Bild wird astrometrisiert. Submission: %1$s"
+
+msgid "Image successfully solved!"
+msgstr "Bild wurde erfolgreich astrometrisiert!"
+
+
 
 msgid "Astrometry Settings"
 msgstr "Astrometry Einstellungen"

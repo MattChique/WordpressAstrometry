@@ -4,12 +4,14 @@ jQuery(document).ready(function($) {
 	{		
 		var data = {'action': 'astronomyImageAction','postId': ajax_object.postId, 'mediaId': $('.astrometry-image').data('mediaid') };
 
-		$('.astrometry-image').append("<div class='astroStatus'></div>");
 		$('.astrometry-image').append("<div class='solving'></div>");
 
 		(function worker() {
 			jQuery.post(ajax_object.ajax_url, data, function(response) {
 				if(response != "") {
+					if($(".astrometry-image .astroStatus").length == 0) {
+						$('.astrometry-image').append("<div class='astroStatus'></div>");
+					}
 					$('.astrometry-image').find('.astroStatus').html(response);
 					setTimeout(worker, 5);
 				} else {
