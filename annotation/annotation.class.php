@@ -15,7 +15,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class Annotation
 {
-    private $imageUrl = "";
+    private $image = null;
     protected $displayWidth = 1120;
     protected $displayHeight = 1120;
     protected $displayRatio = 0;
@@ -29,18 +29,16 @@ class Annotation
 
     protected $showHD = false;
 
-    public function __construct($imageUrl, $displayWidth, $annotations)
+    public function __construct($image, $displayWidth, $annotations)
     {
-        $this->imageUrl = $imageUrl;
-        $imageSize = getimagesize($imageUrl[0]);
-
+        $this->image = $image;
         if($displayWidth < 1)
-            $this->displayWidth = $imageSize[0];
+            $this->displayWidth = $this->image[1];
         else
             $this->displayWidth = $displayWidth;
 
-        $this->displayRatio = $this->displayWidth / $imageSize[0];
-        $this->displayHeight =  floor($imageSize[1]*$this->displayRatio);
+        $this->displayRatio = $this->displayWidth / $this->image[1];
+        $this->displayHeight =  floor($this->image[2]*$this->displayRatio);
         $this->annotations = $annotations;
     }
 
