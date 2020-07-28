@@ -251,6 +251,12 @@ class CelestialGrid
     {
         $pWidth = $this->cRadius * 2;
 
+        if($pWidth / 5 > $minLine)
+            return 5;
+
+        if($pWidth / 2 > $minLine)
+            return 2;
+
         if($pWidth / 1 > $minLine)
             return 1;
 
