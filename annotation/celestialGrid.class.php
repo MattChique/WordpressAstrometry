@@ -133,8 +133,14 @@ class CelestialGrid
                 else
                     $yc = $yc + $centerOffset->y;
 
+                //Orientation
+                $orientation = $this->cOrientation;
+
+                //Perspective
+                $orientation = $orientation + (sin(deg2rad($coord->lat)) * ($this->scale * $x));
+
                 //Rotate
-                $angle = deg2rad($this->cOrientation);
+                $angle = deg2rad($orientation);
                 $coord->y = -($xc*sin($angle) - $yc*cos($angle));
                 $coord->x = ($xc*cos($angle) +  $yc*sin($angle));
 
