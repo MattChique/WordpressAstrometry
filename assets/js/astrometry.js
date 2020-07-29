@@ -1,88 +1,101 @@
 jQuery(document).ready(function($) {
 
-	function Solve()
+	function Solve(astroImg)
 	{		
-		var data = {'action': 'astronomyImageAction','postId': ajax_object.postId, 'mediaId': $('.astrometry-image').data('mediaid') };
+		var solvedata = {
+			'action': 'astronomyImageStartSolve',
+			'postId': ajax_object.postId, 
+			'mediaId': astroImg.data('mediaid') 
+		};
 
-		$('.astrometry-image').append("<div class='solving'></div>");
+		astroImg.append("<div class='solving'></div>");
 
 		(function worker() {
-			jQuery.post(ajax_object.ajax_url, data, function(response) {
-				if(response != "") {
-					if($(".astrometry-image .astroStatus").length == 0) {
-						$('.astrometry-image').append("<div class='astroStatus'></div>");
+			jQuery.ajax({
+				type: 'POST',
+				url: ajax_object.ajax_url,
+				data: solvedata,
+				success: function (response, textStatus, XMLHttpRequest) {
+					if(response != "") {
+						if(astroImg.find(".astrometry-status").length == 0) {
+							astroImg.append("<div class='astrometry-status'></div>");
+						}
+						astroImg.find('.astrometry-status').html(response);
+						setTimeout(worker, 5);
+					} else {
+						astroImg.find('.solving').remove();
+						astroImg.find('.astrometry-status').fadeOut(10000, function() { astroImg.find('.astroStatus').remove(); });
+						astroImg.find(':not(.annotations)').addClass('solved');
+	
+						AddActionBar(astroImg);
+						AddAnnotations(astroImg);
 					}
-					$('.astrometry-image').find('.astroStatus').html(response);
-					setTimeout(worker, 5);
-				} else {
-					$('.astrometry-image .solving').remove();
-					$('.astrometry-image').find('.astroStatus').fadeOut(10000, function() { $('.astrometry-image').find('.astroStatus').remove(); });
-					$('.astrometry-image :not(.annotations)').addClass('solved');
-
-					AddActionBar();
-					AddAnnotations();
+				},
+				error: function (XMLHttpRequest, textStatus, errorThrown) {
+					console.log("Solving failed at Ajax Post")
+					astroImg.find('.solving').remove();
 				}
 			});
-		})();		
+		})();
 	}
 
-	function AddActionBar()
+	function AddActionBar(astroImg)
 	{
 		//ActionBar
-		$(".astrometry-image").append("<div class='astrometryActions' />");
-		$(".astrometryActions").append("<span class='toggleAnnotations astrometryAction' />");
-		$(".astrometryActions").append("<span class='toggleMonochrome astrometryAction' />");
-		$(".astrometryActions").append("<span class='openFull astrometryAction' />");
+		astroImg.append("<div class='astrometryActions' />");
+		astroImg.find(".astrometryActions").append("<span class='toggleAnnotations astrometryAction' />");
+		astroImg.find(".astrometryActions").append("<span class='toggleMonochrome astrometryAction' />");
+		astroImg.find(".astrometryActions").append("<span class='openFull astrometryAction' />");
 	
 		//Actions
-		$(".astrometryActions .toggleAnnotations").on('click', function() {
-			$(".astrometry-image").find(".annotations").toggleClass("visible");
+		astroImg.find(".astrometryActions .toggleAnnotations").on('click', function() {
+			astroImg.find(".annotations").toggleClass("visible");
 			$(this).toggleClass("active");
 		});
-		$(".astrometryActions .toggleMonochrome").on('click', function() {
-			$(".astrometry-image img.solved").toggleClass("monochrome");
+		astroImg.find(".astrometryActions .toggleMonochrome").on('click', function() {
+			astroImg.find("img.solved").toggleClass("monochrome");
 			$(this).toggleClass("active");
 		});
-		$(".astrometryActions .openFull").on('click', function() {
+		astroImg.find(".astrometryActions .openFull").on('click', function() {
 			window.open($(".astrometry-image img.solved").attr("src"), '_blank');
 		});
 
 		//Zoomable Skyplot
-		$(".skyplot").on('click', function() {
-			var src = $(this).find('img').attr('src');
+		astroImg.parent().find(".skyplot img").on('click', function() {
+			var src = $(this).attr('src');
 			if(src.indexOf('zoom2') > 0) {
-				$(this).find('img').attr('src', src.replace("zoom2", "zoom1"))
+				$(this).attr('src', src.replace("zoom2", "zoom1"))
 				return;
 			}
 			if(src.indexOf('zoom1') > 0) {
-				$(this).find('img').attr('src', src.replace("zoom1", "zoom2"))
+				$(this).attr('src', src.replace("zoom1", "zoom2"))
 				return;
 			}
 		});
 
 		//Toggle Fullsize Image with Annotations
-		$(".astrometry-image figure").on('click', function() {
-			$(".astrometry-image").toggleClass("fullsize");
+		astroImg.find("figure").on('click', function() {
+			astroImg.toggleClass("fullsize");
 		});
 	}
 
-	function AddAnnotations()
+	function AddAnnotations(astroImg)
 	{
-		width = $(".astrometry-image > figure").width();
+		width = astroImg.find("> figure").width();
 		if(width != null && width > 0) {
 			var annotationObjects = $("<img />")
-				.insertAfter(".astrometry-image img.solved")
-				.attr("src", $(".astrometry-image img").data("solved") + "&w=" + width)
+				.insertAfter(astroImg.find("img.solved"))
+				.attr("src", astroImg.find("img").data("solved") + "&w=" + width)
 				.addClass("annotations");
 		}
 	}
 
-	if($(".astrometry-image").length > 0) {		
-		if($(".astrometry-image img.solved").length == 0) {
-			Solve();
+	$(".astrometry-image").each(function() {
+		if($(this).find("img.solved").length == 0) {
+			Solve($(this));
 		} else {
-			AddActionBar();
-			AddAnnotations();
+			AddActionBar($(this));
+			AddAnnotations($(this));
 		}
-	}
+	});
 });

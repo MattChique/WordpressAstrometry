@@ -68,8 +68,7 @@ function addAstrometryEditorCss() {
 add_action('enqueue_block_editor_assets', 'addAstrometryEditorCss');
 
 //Callback for Ajax Solving
-function astronomyImageAction_callback() {      
-  
+function astronomyImageStartSolve() {    
     require_once(ASTROMETRY_PLUGIN_BASE . "annotation/astrometryData.class.php"); 
 
     $astrometryData = new AstrometryData($_POST['postId'], $_POST['mediaId']);
@@ -77,7 +76,7 @@ function astronomyImageAction_callback() {
 
     wp_die();
 }
-add_action('wp_ajax_astronomyImageAction', 'astronomyImageAction_callback');	
+add_action('wp_ajax_astronomyImageStartSolve', 'astronomyImageStartSolve');	
 
 //Settings
 if ( is_admin() ) {
