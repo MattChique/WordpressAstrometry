@@ -8,6 +8,16 @@
   border-bottom-width: 0px;
   transition: all 0.3s ease-in;
 }
+.astrometry-image figure {
+  margin:0;
+}
+.astrometry-image:not(.fullsize) .solved{
+  cursor:zoom-in;
+}
+.astrometry-image img{
+  margin: 0!important;
+  width: 100%!important;
+}
 .astrometry-image.fullsize {
   position: fixed;
   top: 0;
@@ -15,20 +25,19 @@
   right: 0;
   bottom: 0;
   z-index: 99999;
-}
-.astrometry-image.fullsize figure{
-  text-align:center;
-}
-.astrometry-image.fullsize img{
-  max-height: 100vh;
-  display: inline-block;
-}
-.astrometry-image figure {
-  margin:0;
-  cursor:zoom-in;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .astrometry-image.fullsize figure {
+  text-align:center;
+  position: relative;
   cursor:zoom-out;
+}
+.astrometry-image.fullsize img {
+  max-height: 100vh;
+  width: auto!important;
+  display: inline-block;
 }
 .astrometry-image .annotations {
 	position: absolute;
