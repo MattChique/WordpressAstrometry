@@ -44,7 +44,10 @@ function astrometry_render($attributes, $content) {
     $postId = $post->ID;
     $mediaId = $attributes['mediaID'];
     $data = new AstrometryData($postId, $mediaId);
-
+    
+    //Photon/Jetpack queries images with width(w) param, we should remove it
+    $content = preg_replace('/((img[^>]*src=["])+(?!http:\/\/)\s*[^"]*[\?\&])(w=([\d]*))/i', '$1', $content);
+    
     //Set solving state of image
     if($mediaId > 0 && $data->Get("annotations") == null) {
         add_action( 'wp_enqueue_scripts', 'astrometry_ajax_script' );	
