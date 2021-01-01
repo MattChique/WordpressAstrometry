@@ -16,6 +16,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 require_once(ASTROMETRY_PLUGIN_BASE . "annotation/astrometryData.class.php"); 
 require_once(ASTROMETRY_PLUGIN_BASE . "annotation/coordinate.class.php"); 
 
+//Global array astrometry images registered for this page
+$astrometryImages = array();
+
 //Register Astrometry Image Block
 function astrometry_01_register_block() {
 
@@ -40,13 +43,14 @@ add_action( 'init', 'astrometry_01_register_block' );
 //Render Astrometry Image Block
 function astrometry_render($attributes, $content) {
     global $post;
-
     $postId = $post->ID;
     $mediaId = $attributes['mediaID'];
     $data = new AstrometryData($postId, $mediaId);
     
-    //Photon/Jetpack queries images with width(w) param, we should remove it
-    $content = preg_replace('/((img[^>]*src=["])+(?!http:\/\/)\s*[^"]*[\?\&])(w=([\d]*))/i', '$1', $content);
+    //Photon/Jetpack queries images with width(w) param, we register it in an array to skip the images
+    preg_match_all('/img[^>]*src=["]+((?!http:\/\/)\s*[^"]*)/i', $content, $matches, PREG_OFFSET_CAPTURE);
+    foreach($matches[1] as $match)
+        array_push($GLOBALS["astrometryImages"], $match[0]);
     
     //Set solving state of image
     if($mediaId > 0 && $data->Get("annotations") == null) {
@@ -94,4 +98,14 @@ function astrometry_render($attributes, $content) {
 
     return $content;
 }
+
+//Prevent registered images from being loaded by jetpack/photon
+function astrometry_photon_exception($val, $src, $tag) {
+    if (in_array($src, $GLOBALS["astrometryImages"])) 
+        return true;
+
+    return $val;
+}
+add_filter('jetpack_photon_skip_image', 'astrometry_photon_exception', 10, 3);
+
 ?>
