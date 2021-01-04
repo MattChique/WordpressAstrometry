@@ -78,6 +78,19 @@ function astronomyImageStartSolve() {
 }
 add_action('wp_ajax_astronomyImageStartSolve', 'astronomyImageStartSolve');	
 
+//Callback for reloading info
+function astronomyRefreshAstrometryInfo() {    
+    require_once(ASTROMETRY_PLUGIN_BASE . "annotation/astrometryData.class.php"); 
+
+    $astrometryData = new AstrometryData($_POST['postId'], $_POST['mediaId']);
+    $astrometryData->GetInfo($astrometryData->Get("submission")["jobs"][0]);
+
+    echo join($astrometryData->GetTagLinks(),", ");
+
+    wp_die();
+}
+add_action('wp_ajax_astronomyRefreshAstrometryInfo', 'astronomyRefreshAstrometryInfo');	
+
 //Settings
 if ( is_admin() ) {
     $astrometry_settings = new AstrometrySettings();

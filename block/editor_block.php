@@ -73,19 +73,14 @@ function astrometry_render($attributes, $content) {
     $add = "";
     if(isset($attributes["showAstrometryMetaData"]) && $info != null)
     {
-        $tags = array();
-        foreach($info["tags"] as $t)
-        {
-            $text = preg_replace("/u([0-9a-f]{2,4})/", "&#x\\1;", $t);
-            array_push($tags, "<a href='/?s=".$text."'>".$text."</a>");
-        }        
-        
         $add .= '<label>' . __('RA', 'astrometry') . '</label><p class="col2"><abbr title="'.$info["calibration"]["ra"].'">' . Coord::DegToHms($info["calibration"]["ra"]) . '</abbr></p>';
         $add .= '<label class="col3">' . __('DEC', 'astrometry') . '</label><p class="col4"><abbr title="'.$info["calibration"]["dec"].'">' . Coord::DegToDms($info["calibration"]["dec"]) . '</abbr></p>';
         $add .= '<label>' . __('Fieldradius', 'astrometry') . '</label><p class="col2">' . Coord::DegToDms($info["calibration"]["radius"]) . '</p>';
         $add .= '<label class="col3">' . __('Pixelscale', 'astrometry') . '</label><p class="col4">' . round($info["calibration"]["pixscale"],4) . ' <span class="unit">px/arcsec</span></p>';
         $add .= '<label>' . __('Job', 'astrometry') . '</label><p><a href="http://nova.astrometry.net/status/'.$data->Get("subid").'" target="_blank">'.$data->Get("subid").'</a></p>';
-        $add .= '<label>' . __('Objects', 'astrometry') . '</label><p class="objects">' . join($tags,", ") . '</p>';
+        $add .= '<label>';
+        if ( current_user_can('administrator') ) { $add .= '<a href="javascript:void(0);" class="refreshAstrometry refreshInfo" title="' . __('Reload object tags', 'astrometry') . '"></a>'; }
+        $add .= __('Objects', 'astrometry') . '</label><p class="objects">' . join($data->GetTagLinks(),", ") . '</p>';
 
         $content = str_replace("{SKYPLOT}", "<img src='//nova.astrometry.net/sky_plot/zoom1/" . $submission["job_calibrations"][0][1] . "'>", $content);
     }

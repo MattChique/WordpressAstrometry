@@ -18,7 +18,10 @@ class AstrometryData
     private $postId;
     private $mediaId;
     private $metaFieldName;
-    private $data;
+	private $data;
+	
+	private $astrometryNetApi = "http://nova.astrometry.net/api/";
+	private $astrometryNetPublicly = "n";
 
     public function __construct($postId, $mediaId)
     {
@@ -57,9 +60,6 @@ class AstrometryData
 
     public function Solve($apiKey) 
 	{
-		$astrometryNetApi = "http://nova.astrometry.net/api/";
-		$astrometryNetPublicly = "n";
-
 		if($apiKey == "")
 			return "No API Key!";
 
@@ -87,11 +87,8 @@ class AstrometryData
 					}
 					if($resultJsonJob->status == "success")
 					{			
-						$resultJsonJobInfo = json_decode(file_get_contents($astrometryNetApi."jobs/".$resultJsonSubmission->jobs[0]."/info/"));
-						$resultJsonAnnotations = json_decode(file_get_contents($astrometryNetApi."jobs/".$resultJsonSubmission->jobs[0]."/annotations/"));
-
-						$this->Add("info", $resultJsonJobInfo);
-						$this->Add("annotations", $resultJsonAnnotations);
+						GetInfo($resultJsonSubmission->jobs[0]);
+						GetAnnotations($resultJsonSubmission->jobs[0]);
 
 						return __("Image successfully solved!", "astrometry");
 					}
@@ -113,6 +110,29 @@ class AstrometryData
 				return printf(__('Image solving startet: %1$s', "astrometry"), $jobResponse->subid);
 			}
 		}
+	}
+
+	public function GetInfo($jobId)
+	{
+		$resultJson = json_decode(file_get_contents($this->astrometryNetApi."jobs/".$jobId."/info/"), true);
+		$this->Add("info", $resultJson);
+	}
+
+	public function GetAnnotations($jobId)
+	{
+		$resultJson = json_decode(file_get_contents($this->astrometryNetApi."jobs/".$jobId."/annotations/"), true);
+		$this->Add("annotations", $resultJson);
+	}
+
+	public function GetTagLinks()
+	{
+        $tags = array();
+        foreach($this->Get("info")["tags"] as $t)
+        {
+            $text = preg_replace("/u([0-9a-f]{2,4})/", "&#x\\1;", $t);
+            array_push($tags, "<a href='/?s=".$text."'>".$text."</a>");
+		}
+		return $tags;
 	}
 
 	private function Curl($url, $content)

@@ -39,6 +39,30 @@ jQuery(document).ready(function($) {
 		})();
 	}
 
+	function RefreshAstrometryInfo(astroImg)
+	{		
+		var solvedata = {
+			'action': 'astronomyRefreshAstrometryInfo',
+			'postId': ajax_object.postId, 
+			'mediaId': astroImg.data('mediaid') 
+		};
+
+		(function worker() {
+			jQuery.ajax({
+				type: 'POST',
+				url: ajax_object.ajax_url,
+				data: solvedata,
+				success: function (response, textStatus, XMLHttpRequest) {
+					astroImg.parent().find(".objects").html(response);
+					astroImg.parent().find(".refreshInfo").toggleClass("active");
+				},
+				error: function (XMLHttpRequest, textStatus, errorThrown) {
+					astroImg.parent().find(".refreshInfo").toggleClass("active");
+				}
+			});
+		})();
+	}
+
 	function AddActionBar(astroImg)
 	{
 		//ActionBar
@@ -58,6 +82,12 @@ jQuery(document).ready(function($) {
 		});
 		astroImg.find(".astrometryActions .openFull").on('click', function() {
 			window.open($(".astrometry-image img.solved").attr("src"), '_blank');
+		});
+
+		//Refresh info button
+		astroImg.parent().find(".refreshInfo").on('click', function() {
+			RefreshAstrometryInfo(astroImg);
+			$(this).toggleClass("active");
 		});
 
 		//Zoomable Skyplot

@@ -19,7 +19,8 @@ msgstr ""
 msgid "Objects"
 msgstr "Objekte"
 
-
+msgid "Reload object tags"
+msgstr "Objekte erneut abrufen"
 
 msgid "Could not solve image"
 msgstr "Bild wurde nicht astrometrisiert. Fehlschlag"
