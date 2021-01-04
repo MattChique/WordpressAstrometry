@@ -74,7 +74,7 @@ function astrometry_render($attributes, $content) {
     if(isset($attributes["showAstrometryMetaData"]) && $info != null)
     {
         $tags = array();
-        foreach($info["machine_tags"] as $t)
+        foreach($info["tags"] as $t)
         {
             $text = preg_replace("/u([0-9a-f]{2,4})/", "&#x\\1;", $t);
             array_push($tags, "<a href='/?s=".$text."'>".$text."</a>");
