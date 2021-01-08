@@ -53,11 +53,11 @@ class Coord
         $tempma = $dec - $deg;
         $tempma = $tempma * 3600;
         $min = floor($tempma / 60);
-        $sec = $tempma - ($min*60);
+        $sec = round($tempma - ($min*60));
 
         $return = $deg . "° ";
         $return .= $min . "' ";
-        $return .= floor($sec) . "''";
+        if($sec > 0) $return .= $sec . "''";
 
         return $return;
     }    
@@ -65,15 +65,21 @@ class Coord
     // Converts decimal format to HMS ( Hour / minutes / seconds ) 
     public static function DegToHms($dec)
     {	
-        $hour = floor($dec/15);
-        $min = floor((($dec/15)-$hour)*60);
-        $sec = floor((((($dec/15)-$hour)*60)-$min)*60);
+        $sectot = $dec * 3600 / 15;
 
-        $return = $hour . "h ";
-        $return .= $min . "' ";
-        $return .= $sec . "''";
+        $hour = floor($sectot / 60 / 60);
+        $sectot = $sectot - $hour *60 *60;
 
-	    return $return;
+        $min = floor($sectot / 60);
+        $sectot = $sectot - $min * 60;
+
+        $sec = round($sectot);
+
+        $return                  = $hour   . "h ";
+        $return                 .= $min    . "' ";
+        if($sec > 0) $return    .= $sec    . "''";
+
+        return $return;
     } 
 }
 ?>
