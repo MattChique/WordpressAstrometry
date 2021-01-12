@@ -67,13 +67,13 @@ class AstrometryData
 		{
 			if($this->Get("subid") != null)
 			{
-				$resultJsonSubmission = json_decode(file_get_contents($astrometryNetApi."submissions/".$this->Get("subid")));
+				$resultJsonSubmission = json_decode(file_get_contents($this->astrometryNetApi."submissions/".$this->Get("subid")));
 
 				if($resultJsonSubmission->jobs[0] != "")
 				{	
                     $this->Add("submission", $resultJsonSubmission);
 
-					$resultJsonJob = json_decode(file_get_contents($astrometryNetApi."jobs/".$resultJsonSubmission->jobs[0]));
+					$resultJsonJob = json_decode(file_get_contents($this->astrometryNetApi."jobs/".$resultJsonSubmission->jobs[0]));
 					if($resultJsonJob->status == "failure")
 					{
 						$this->Remove("submission");
@@ -87,8 +87,8 @@ class AstrometryData
 					}
 					if($resultJsonJob->status == "success")
 					{			
-						GetInfo($resultJsonSubmission->jobs[0]);
-						GetAnnotations($resultJsonSubmission->jobs[0]);
+						$this->GetInfo($resultJsonSubmission->jobs[0]);
+						$this->GetAnnotations($resultJsonSubmission->jobs[0]);
 
 						return __("Image successfully solved!", "astrometry");
 					}
@@ -100,10 +100,10 @@ class AstrometryData
 			}
 			else
 			{
-                $loginResponse = json_decode($this->Curl($astrometryNetApi."login",'request-json={"apikey": "'.$apiKey.'"}'), false);
+                $loginResponse = json_decode($this->Curl($this->astrometryNetApi."login",'request-json={"apikey": "'.$apiKey.'"}'), false);
                 $imageUrl =  wp_get_attachment_image_src($this->mediaId, 'original')[0];
-				$content = 'request-json={"session": "'. $loginResponse->session.'", "url": "'.$imageUrl.'", "allow_commercial_use": "n", "publicly_visible" : "'.$astrometryNetPublicly.'"}';
-				$jobResponse = json_decode($this->Curl($astrometryNetApi."url_upload",$content),false);
+				$content = 'request-json={"session": "'. $loginResponse->session.'", "url": "'.$imageUrl.'", "allow_commercial_use": "n", "publicly_visible" : "'.$this->astrometryNetPublicly.'"}';
+				$jobResponse = json_decode($this->Curl($this->astrometryNetApi."url_upload",$content),false);
 				
 				$this->Add("subid", $jobResponse->subid);
 				
