@@ -57,6 +57,8 @@ class SvgAnnotation extends Annotation
                 rect, line, ellipse { stroke:#CCC; }
                 rect { fill:rgba(0,0,0,0.5); }
 
+                line.reticle { stroke-width:1; }
+
                 rect.type-ic, line.type-ic, ellipse.type-ic { stroke: {$color_ic}; }
                 rect.type-ngc, line.type-ngc, ellipse.type-ngc { stroke: {$color_ngc}; }
                 rect.type-bright, line.type-bright, ellipse.type-bright { stroke: {$color_bright}; }
@@ -93,8 +95,11 @@ SVG;
             if($object["type"] == "hd" && !$this->showHD)
                 continue;
 
-            //Draw Circle
-            $this->DrawCircle($object);
+            //Draw Object
+            if($object["radius"] < 3)
+                $this->DrawReticle($object);
+            else
+                $this->DrawCircle($object);
 
             //Draw Text
             $this->DrawText($object);
@@ -117,6 +122,43 @@ SVG;
         echo <<<SVG
         
             <ellipse rx="{$radius}" ry="{$radius}" cx="{$x}" cy="{$y}" class="type-{$object["type"]}"/>
+SVG;
+    }
+
+    public function DrawReticle($object)
+    {            
+        $x = $this->RV($object["pixelx"]);
+        $y = $this->RV($object["pixely"]);   
+
+        $offset = 4;
+        $width = 8;
+
+        $ax1 = $x-$offset-$width;
+        $ay1 = $y;
+        $ax2 = $x-$offset;
+        $ay2 = $y;
+
+        $bx1 = $x;
+        $by1 = $y-$offset-$width;
+        $bx2 = $x;
+        $by2 = $y-$offset;
+
+        $cx1 = $x+$offset+$width;
+        $cy1 = $y;
+        $cx2 = $x+$offset;
+        $cy2 = $y;
+
+        $dx1 = $x;
+        $dy1 = $y+$offset+$width;
+        $dx2 = $x;
+        $dy2 = $y+$offset;
+        
+        echo <<<SVG
+    
+            <line x1="{$ax1}" y1="{$ay1}" x2="{$ax2}" y2="{$ay2}" class="reticle type-{$object["type"]}"/>
+            <line x1="{$bx1}" y1="{$by1}" x2="{$bx2}" y2="{$by2}" class="reticle type-{$object["type"]}"/>
+            <line x1="{$cx1}" y1="{$cy1}" x2="{$cx2}" y2="{$cy2}" class="reticle type-{$object["type"]}"/>
+            <line x1="{$dx1}" y1="{$dy1}" x2="{$dx2}" y2="{$dy2}" class="reticle type-{$object["type"]}"/>
 SVG;
     }
 
