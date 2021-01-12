@@ -137,7 +137,7 @@ class CelestialGrid
                 $orientation = $this->cOrientation;
 
                 //Perspective
-                $orientation = $orientation + (sin(deg2rad($coord->lat)) * ($this->scale * $x));
+                $orientation = $orientation + (sin(deg2rad($coord->lat)) * (($this->scale/M_PI) * $x));
 
                 //Rotate
                 $angle = deg2rad($orientation);
@@ -281,6 +281,11 @@ class CelestialGrid
         if($this->scale == 0.2)
         {
             return floor($coord * 5) / 5;
+        }
+
+        if($this->scale == 0.1)
+        {
+            return floor($coord * 1) / 1;
         }
 
         return round($coord,1);
