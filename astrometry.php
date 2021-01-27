@@ -34,7 +34,10 @@ require_once(ASTROMETRY_PLUGIN_BASE . "block/editor_block.php");
 
 //Einstellungen und Ergänzungen
 $astrometry_settings_options = get_option( 'astrometry_settings' );
-add_filter('jpeg_quality', function($arg) { return $astrometry_settings_options['image_quality']; } );
+add_filter('jpeg_quality', function($arg) { 
+	global $astrometry_settings_options;
+	return $astrometry_settings_options['image_quality']; 
+});
 
 //Init
 function init_astrometry() {
