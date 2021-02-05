@@ -112,12 +112,35 @@ jQuery(document).ready(function($) {
 	function AddAnnotations(astroImg)
 	{
 		width = astroImg.find("> figure").width();
-		if(width != null && width > 0) {
-			var annotationObjects = $("<img />")
-				.insertAfter(astroImg.find("img.solved"))
-				.attr("src", astroImg.find("img").data("solved") + "&w=" + width)
-				.addClass("annotations");
+		if(width != null) {
+			if(width > 0) {
+				AddAnnotationImage(astroImg, width);
+			} else {
+				width = 0;
+				parent = astroImg.find("> figure").parent();
+				while(parent != null)
+				{
+					if(parent.width() > 0)
+					{
+						width = parent.width()
+						parent = null;
+					}
+					else
+					{
+						parent = parent.parent();
+					}
+				}
+				AddAnnotationImage(astroImg, width);
+			}
 		}
+	}
+
+	function AddAnnotationImage(astroImg, width)
+	{
+		var annotationObjects = $("<img />")
+		.insertAfter(astroImg.find("img.solved"))
+		.attr("src", astroImg.find("img").data("solved") + "&w=" + width)
+		.addClass("annotations");	
 	}
 
 	$(".astrometry-image").each(function() {
