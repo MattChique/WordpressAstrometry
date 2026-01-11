@@ -140,16 +140,31 @@ class AstrometryData
 		$calibrationId = $this->Get("submission")['job_calibrations'][0][1];
 		$filename = pathinfo(wp_get_attachment_image_src( $this->mediaId, 'full', false )[0])['filename'];
 
+		//Some context for accessing the astrometry.net sky plots, otherwise access is blocked
+		$context = stream_context_create([
+			"http" => [
+				"method" => "GET",
+				"header" => implode("\r\n", [
+					"Referer: " . home_url('/'),
+					"Connection: close"
+				]),
+				"timeout" => 30,
+				"follow_location" => true
+			]
+		]);
+		
 		//Saving Skyplot Zoom 1
 		$skyplot1File = wp_upload_dir()['path'] . "/" . $filename . "-skyplot1.png";
-		if (!file_exists($skyplot1File)) {			
-			file_put_contents($skyplot1File, fopen("https://nova.astrometry.net/sky_plot/zoom1/" . $calibrationId, 'r'));
+		if (!file_exists($skyplot1File)) {		
+			$data = file_get_contents("https://nova.astrometry.net/sky_plot/zoom1/" . $calibrationId, false, $context);
+			file_put_contents($skyplot1File, $data);
 		}
 
 		//Saving Skyplot Zoom 2
 		$skyplot2File = wp_upload_dir()['path'] . "/" . $filename . "-skyplot2.png";
 		if (!file_exists($skyplot2File)) {			
-			file_put_contents($skyplot2File, fopen("https://nova.astrometry.net/sky_plot/zoom2/" . $calibrationId, 'r'));
+			$data = file_get_contents("https://nova.astrometry.net/sky_plot/zoom2/" . $calibrationId, false, $context);
+			file_put_contents($skyplot2File, $data);
 		}
 
 	  	return wp_upload_dir()['url'] . "/" . $filename . "-skyplot".$zoom.".png";	
